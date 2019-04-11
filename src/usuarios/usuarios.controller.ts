@@ -8,11 +8,11 @@ export class UsuariosController {
 	constructor(private usuariosService: UsuariosService){}
 	
 	@Get()
-	obtenerUsuarios(): Promise<Object> {
+	obtenerUsuarios(): Promise<Usuario> {
 		return this.usuariosService.obtenerUsuarios();
 	}
 	@Get(':id')
-	obtenerUsuario(@Param('id') id): Promise<Object> {
+	obtenerUsuario(@Param('id') id): Promise<Usuario> {
 		return this.usuariosService.obtenerUsuario(id);
 	}
 
