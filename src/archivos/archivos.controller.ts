@@ -1,6 +1,6 @@
 import { Controller, Get, Post, Put, Delete, Body,Param,Res } from '@nestjs/common';
 import { ArchivosService } from "./archivos.service";
-import { Archivo } from "src/interfaces/Archivo";
+import { Archivo } from "./../interfaces/Archivo";
 var fs = require('fs');
 
 @Controller('archivos')
