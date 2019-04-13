@@ -7,7 +7,7 @@
   "scripts": {
     "build": "tsc -p tsconfig.build.json",
     "format": "prettier --write \"src/**/*.ts\"",
-    "start": "ts-node -r tsconfig-paths/register src/main.ts",
+    "start": "ts-node src/main.ts",
     "start:dev": "nodemon",
     "start:debug": "nodemon --config nodemon-debug.json",
     "prestart:prod": "rimraf dist && npm run build",
@@ -27,6 +27,7 @@
     "mongoose": "^5.5.0",
     "reflect-metadata": "^0.1.12",
     "rimraf": "^2.6.2",
+    "ts-node": "^7.0.1",
     "rxjs": "^6.3.3"
   },
   "devDependencies": {
