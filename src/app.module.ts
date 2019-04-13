@@ -10,7 +10,7 @@ import { ArchivosService } from './archivos/archivos.service';
 import { ArchivosModule } from './archivos/archivos.module';
 
 @Module({
-  imports: [MongooseModule.forRoot('mongodb://localhost/BibliotecaBackend',{useNewUrlParser: true}),UsuariosModule, ArchivosModule],
+  imports: [MongooseModule.forRoot('mongodb+srv://giordano:waldo@cluster0-p2txm.mongodb.net/BibliotecaBackend?retryWrites=true',{useNewUrlParser: true}),UsuariosModule, ArchivosModule],
   controllers: [AppController, UsuariosController, ArchivosController],
   providers: [AppService, UsuariosService, ArchivosService],
 })
