@@ -2,6 +2,7 @@ import { Controller, Get, Post, Put, Delete, Body,Param,Res } from '@nestjs/comm
 import { ArchivosService } from "./archivos.service";
 import { Archivo } from "./../interfaces/Archivo";
 var fs = require('fs');
+const path = require('path');
 
 @Controller('archivos')
 export class ArchivosController {
@@ -13,8 +14,8 @@ export class ArchivosController {
 		var objeto = this.archivosService.obtenerArchivo(id);
 		objeto.then(function(res){
 			var buf = Buffer.from(res[0].archivo.toString(), 'base64');  
-			fs.writeFile('fotos/foto'+numero+'.png', buf,function(){
-				return respuesta.sendFile('E:/Archivos/P_RecomendacionTemas/Backend/biblioteca-backend/fotos/foto'+numero+'.png');
+			fs.writeFile(path.dirname(path.dirname(__dirname))+'/fotos/foto'+numero+'.png', buf,function(){
+				return respuesta.sendFile(path.dirname(path.dirname(__dirname))+'/fotos/foto'+numero+'.png');
 			});
 			
 		});
