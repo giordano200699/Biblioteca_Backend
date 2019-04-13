@@ -28,6 +28,7 @@
     "reflect-metadata": "^0.1.12",
     "rimraf": "^2.6.2",
     "ts-node": "^7.0.1",
+    "typescript": "^3.2.4",
     "rxjs": "^6.3.3"
   },
   "devDependencies": {
