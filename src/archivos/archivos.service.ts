@@ -33,4 +33,17 @@ export class ArchivosService {
 	async eliminarArchivo(id:String){
 		return await this.archivoModelo.deleteOne({"_id":id});
 	}
+
+	mensajeError(id:Number){
+		if(id==1){
+			return "Usted no tiene permiso para obtener la imagen procesada de un archivo en específico.";
+		}else if(id==2){
+			return "Usted no tiene permiso para obtener toda la información de un archivo en específico.";
+		}else if(id==3){
+			return "Usted no tiene permiso para crear un nuevo archivo en la base de datos.";
+		}else if(id==4){
+			return "Usted no tiene permiso para editar la información de un archivo en específico";
+		}
+		return "Usted no tiene permiso para eliminar un archivo en la base de datos.";
+	}
 }
