@@ -26,6 +26,11 @@ export class ArchivosController {
 		}
 		return this.archivosService.mensajeError(1);
 	}
+	@Get('ipUsuarioHistorial')
+	obtenerIpUsuarioHistorial(@Res() respuesta){
+		respuesta.sendFile(path.dirname(path.dirname(__dirname))+'/archivos/ipCliente.txt');
+	}
+
 	@Get(':id')
 	obtenerArchivo(@Param('id') id,@Req() request: Request){
 		if(request.query.clave == CLAVE){
