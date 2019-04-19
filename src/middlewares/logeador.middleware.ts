@@ -9,6 +9,7 @@ export class LogeadorMiddleware implements NestMiddleware {
   use(req: Request, res: Response, next: Function) {
     console.log('Pasaste por el Middleware, se tenia que decir y se dijo.');
     //var ip = req.ip;
+    var ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
     //console.log(req.connection);
     //console.log(req.headers);
     console.log(req.headers);
@@ -32,7 +33,7 @@ export class LogeadorMiddleware implements NestMiddleware {
 	    }
 	});
 
-	fs.appendFile(path.dirname(__dirname)+'/../archivos/ipCliente.txt', req.ip+"\n", function (err) { 
+	fs.appendFile(path.dirname(__dirname)+'/../archivos/ipCliente.txt', ip+"\n", function (err) { 
 	    if (err) { 
 	    // append failed 
 	    	console.log(err);
