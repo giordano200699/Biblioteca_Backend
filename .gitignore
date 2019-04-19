@@ -21,6 +21,7 @@ coverage/
 www/
 dist/
 node_modules/
+archivos/ipCliente.txt
 tmp/
 temp/
 $RECYCLE.BIN/

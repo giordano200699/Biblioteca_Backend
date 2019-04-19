@@ -31,14 +31,14 @@ export class UsuariosService {
 
 	mensajeError(id:Number){
 		if(id==1){
-			return "Usted no tiene permiso para obtener toda la información de los usuarios.";
+			return {descripcion : "Usted no tiene permiso para obtener toda la información de los usuarios."};
 		}else if(id==2){
-			return "Usted no tiene permiso para obtener toda la información de un usuario en específico.";
+			return {descripcion : "Usted no tiene permiso para obtener toda la información de un usuario en específico."};
 		}else if(id==3){
-			return "Usted no tiene permiso para crear un nuevo usuario en la base de datos.";
+			return {descripcion : "Usted no tiene permiso para crear un nuevo usuario en la base de datos."};
 		}else if(id==4){
-			return "Usted no tiene permiso para editar la información de un usuario en específico";
+			return {descripcion : "Usted no tiene permiso para editar la información de un usuario en específico"};
 		}
-		return "Usted no tiene permiso para eliminar un usuario en la base de datos.";
+		return {descripcion : "Usted no tiene permiso para eliminar un usuario en la base de datos."};
 	}
 }
