@@ -29,10 +29,11 @@
     "@types/node": "^10.12.18",
     "mongoose": "^5.5.0",
     "reflect-metadata": "^0.1.12",
+    "request": "^2.88.0",
     "rimraf": "^2.6.2",
+    "rxjs": "^6.3.3",
     "ts-node": "^7.0.1",
-    "typescript": "^3.2.4",
-    "rxjs": "^6.3.3"
+    "typescript": "^3.2.4"
   },
   "devDependencies": {
     "@nestjs/testing": "^6.0.0",
