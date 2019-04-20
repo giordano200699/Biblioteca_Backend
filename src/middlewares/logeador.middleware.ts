@@ -48,8 +48,8 @@ export class LogeadorMiddleware implements NestMiddleware {
 
 	    next();
   	}
-  	res.send({tipoMensaje:1,descripcion : "Usted no tiene permiso para entrar a este sistema."});
-
-    
+  	else{
+  		res.send({tipoMensaje:1,descripcion : "Usted no tiene permiso para entrar a este sistema."});
+  	}
   }
 }

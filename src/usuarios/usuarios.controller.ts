@@ -3,8 +3,6 @@ import { UsuariosService } from "./usuarios.service";
 import { Usuario } from "./../interfaces/Usuario";
 import { Request } from 'express';
 
-const CLAVE = "QDm6pbKeVwWikPvpMSUYwp0tNnxcaLoYLnyvLQ4ISV39uQOgsjTEjS0UNlZHwbxl2Ujf30S31CSKndwpkFeubt5gJHTgFlq7LeIaSYc0jNm44loPty2ZK1nI0qisrt2Xwq0nFhdp8H3kdpyL5wVZLH7EpSE6IO0cHAOGOfSpJjF36eiCuXJ3gkOfX8C4n";
-
 @Controller('usuarios')
 export class UsuariosController {
 
@@ -13,6 +11,10 @@ export class UsuariosController {
 	@Get()
 	obtenerUsuarios(@Req() request: Request){
 		return this.usuariosService.obtenerUsuarios();
+	}
+	@Post('esUsuario')
+	esUsuario(@Body() cuenta){
+		return this.usuariosService.esUsuario(cuenta);
 	}
 	@Get(':id')
 	obtenerUsuario(@Param('id') id, @Req() request: Request){

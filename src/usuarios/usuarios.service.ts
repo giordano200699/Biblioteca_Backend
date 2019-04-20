@@ -1,12 +1,13 @@
 import { Injectable } from '@nestjs/common';
 import { Usuario } from "src/interfaces/Usuario";
+import { Cuenta } from "src/interfaces/Cuenta";
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 
 @Injectable()
 export class UsuariosService {
 
-	constructor(@InjectModel('Usuario') private usuarioModelo: Model<Usuario>) {}
+	constructor(@InjectModel('Usuario') private usuarioModelo: Model<Usuario>,@InjectModel('Cuenta') private cuentaModelo: Model<Cuenta>) {}
 
 	async obtenerUsuarios(){
 		return await this.usuarioModelo.find();
@@ -40,5 +41,20 @@ export class UsuariosService {
 			return {descripcion : "Usted no tiene permiso para editar la información de un usuario en específico"};
 		}
 		return {descripcion : "Usted no tiene permiso para eliminar un usuario en la base de datos."};
+	}
+
+	async esUsuario(cuenta){
+		var objeton = this;
+		return this.cuentaModelo.find({"nombre":cuenta.nombre,"contrasenia":cuenta.contrasenia}).then(async function(res){
+			if(res.length==1){
+				return await objeton.usuarioModelo.find({'dni':res[0].idUsuario});
+			}else{
+				if(res.length==0){
+					return {tipoMensaje:2,descripcion:'No existe una cuenta de usuario con estos datos.'};
+				}else{
+					return {tipoMensaje:3,descripcion:'ERROR RARO, existen mas de una cuenta de usuario vinculado con estos datos'};				
+				}
+			}
+		});
 	}
 }
