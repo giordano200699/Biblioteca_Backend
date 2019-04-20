@@ -12,40 +12,25 @@ export class UsuariosController {
 	
 	@Get()
 	obtenerUsuarios(@Req() request: Request){
-		if(request.query.clave == CLAVE){
-			return this.usuariosService.obtenerUsuarios();
-		}
-		return this.usuariosService.mensajeError(1);
+		return this.usuariosService.obtenerUsuarios();
 	}
 	@Get(':id')
 	obtenerUsuario(@Param('id') id, @Req() request: Request){
-		if(request.query.clave == CLAVE){
-			return this.usuariosService.obtenerUsuario(id);
-		}
-		return this.usuariosService.mensajeError(2);
+		return this.usuariosService.obtenerUsuario(id);
 	}
 
 	@Post()
 	crearUsuario(@Body() usuario:Usuario, @Req() request: Request){
-		if(request.query.clave == CLAVE){
-			return this.usuariosService.crearUsuario(usuario);
-		}
-		return this.usuariosService.mensajeError(3);
+		return this.usuariosService.crearUsuario(usuario);
 	}
 
 	@Put(':id')
 	actualizarUsuario(@Param('id') id, @Body() usuario:Usuario, @Req() request: Request){
-		if(request.query.clave == CLAVE){
-			return this.usuariosService.actualizarUsuario(id,usuario);
-		}
-		return this.usuariosService.mensajeError(4);
+		return this.usuariosService.actualizarUsuario(id,usuario);
 	}
 
 	@Delete(':id')
 	eliminarUsuario(@Param('id') id, @Req() request: Request){
-		if(request.query.clave == CLAVE){
-			return this.usuariosService.eliminarUsuario(id);
-		}
-		return this.usuariosService.mensajeError(5);
+		return this.usuariosService.eliminarUsuario(id);
 	}
 }
