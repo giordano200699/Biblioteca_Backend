@@ -1,7 +1,7 @@
 import { Document } from "mongoose";
 
 export interface Usuario extends Document {
-	_id?: String;
+	_id?: String,
 	dni: String, 
 	nombres: String,
 	apellidos: String,

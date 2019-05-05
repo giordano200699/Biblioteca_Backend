@@ -13,7 +13,7 @@ export class TipoUsuariosService {
 	}
 
 	async obtenerTipoUsuario(id:String){
-		return await this.tipoUsuarioModelo.find({'_id':id});
+		return await this.tipoUsuarioModelo.find({'id':id});
 	}
 
 	async registrar(tipoUsuario: TipoUsuario){
@@ -22,10 +22,10 @@ export class TipoUsuariosService {
 	}
 
 	async actualizar(id:String, tipoUsuario:TipoUsuario){
-		return await this.tipoUsuarioModelo.update({"_id":id},tipoUsuario);
+		return await this.tipoUsuarioModelo.update({"id":id},tipoUsuario);
 	}
 
 	async eliminar(id:String){
-		return await this.tipoUsuarioModelo.deleteOne({"_id":id});
+		return await this.tipoUsuarioModelo.deleteOne({"id":id});
 	}
 }
