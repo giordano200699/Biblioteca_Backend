@@ -15,5 +15,5 @@ export const UsuarioSchema = new Schema({
   telefonoMovil: String,
   direccion: String,
   imagenId: String,
-  contrasenia: String
+  tipoUsuarioId: String
 });

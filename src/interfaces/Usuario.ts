@@ -16,5 +16,5 @@ export interface Usuario extends Document {
 	telefonoMovil?: String,
 	direccion?: String,
 	imagenId?: String,
-	contrasenia: String
+	tipoUsuarioId: String
 }
