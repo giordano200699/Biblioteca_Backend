@@ -19,7 +19,9 @@ export class UsuariosService {
 
 	async crearUsuario(usuario: Usuario){
 		const usuarioNuevo = new this.usuarioModelo(usuario);
+		const cuentaNueva = new this.cuentaModelo({nombre:usuario.nombre,contrasenia:usuario.codigo});
 		return await usuarioNuevo.save();
+
 	}
 
 	async actualizarUsuario(id:String, usuario:Usuario){
@@ -27,7 +29,9 @@ export class UsuariosService {
 	}
 
 	async eliminarUsuario(id:String){
+		await this.cuentaModelo.deleteOne({"idUsuario":id});
 		return await this.usuarioModelo.deleteOne({"dni":id});
+
 	}
 
 	mensajeError(id:Number){
