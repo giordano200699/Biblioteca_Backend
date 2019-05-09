@@ -20,6 +20,7 @@ export class UsuariosService {
 	async crearUsuario(usuario: Usuario){
 		const usuarioNuevo = new this.usuarioModelo(usuario);
 		const cuentaNueva = new this.cuentaModelo({nombre:usuario.correoInstitucional,contrasenia:usuario.codigo,idUsuario:usuario.dni});
+		await cuentaNueva.save();
 		return await usuarioNuevo.save();
 
 	}
