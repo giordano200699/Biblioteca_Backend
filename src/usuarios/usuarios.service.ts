@@ -32,7 +32,6 @@ export class UsuariosService {
 	async eliminarUsuario(id:String){
 		await this.cuentaModelo.deleteOne({"idUsuario":id});
 		return await this.usuarioModelo.deleteOne({"dni":id});
-
 	}
 
 	mensajeError(id:Number){
