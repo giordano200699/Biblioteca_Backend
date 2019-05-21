@@ -11,19 +11,19 @@ export class AutoresController {
 	@Get()
 	obtenerAutores(@Req() request: Request){
 		return this.autoresService.obtenerAutores();
-    }
+	}
 
-    @Get(':id')
+	@Get(':id')
 	obtenerAutor(@Param('id') id){
 		return this.autoresService.obtenerAutor(id);
 	}
     
-    @Post()
+	@Post()
 	crearAutor(@Body() autor:Autor, @Req() request: Request){
 		return this.autoresService.crearAutor(autor);
-    }
+	}
     
-    @Put(':id')
+	@Put(':id')
 	actualizarAutor(@Param('id') id, @Body() autor:Autor, @Req() request: Request){
 		return this.autoresService.actualizarAutor(id,autor);
 	}
