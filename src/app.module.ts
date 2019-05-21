@@ -13,6 +13,7 @@ import { LogeadorMiddleware } from './middlewares/logeador.middleware';
 import { TipoUsuariosModule } from './tipoUsuarios/tipoUsuarios.module';
 import { AutoresModule } from './autores/autores.module';
 import { EditorialesModule } from './editoriales/editoriales.module';
+import { LibrosModule } from './libros/libros.module';
 
 @Module({
 	imports: [MongooseModule.forRoot('mongodb+srv://giordano:waldo@cluster0-p2txm.mongodb.net/BibliotecaBackend?retryWrites=true',{useNewUrlParser: true}),
@@ -20,7 +21,8 @@ import { EditorialesModule } from './editoriales/editoriales.module';
 		ArchivosModule,
 		TipoUsuariosModule,
 		AutoresModule,
-		EditorialesModule
+		EditorialesModule,
+		LibrosModule
 	],
   controllers: [AppController, UsuariosController, ArchivosController],
   providers: [AppService, UsuariosService, ArchivosService],
