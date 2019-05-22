@@ -3,6 +3,8 @@ import { Libro } from "src/interfaces/Libro";
 import { Item } from "src/interfaces/Item";
 import { Libro_Autor } from "src/interfaces/Libro_Autor";
 import { Libro_Editorial } from "src/interfaces/Libro_Editorial";
+import { Autor } from "src/interfaces/Autor";
+import { Editorial } from "src/interfaces/Editorial";
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 
@@ -12,7 +14,9 @@ export class LibrosService {
 	constructor(@InjectModel('Libro') private libroModelo: Model<Libro>,
 	@InjectModel('Item') private itemModelo: Model<Item>,
 	@InjectModel('Libro_Autor') private libro_autorModelo: Model<Libro_Autor>,
-	@InjectModel('Libro_Editorial') private libro_editorialModelo: Model<Libro_Editorial>) {}
+	@InjectModel('Libro_Editorial') private libro_editorialModelo: Model<Libro_Editorial>,
+	@InjectModel('Autor') private autorModelo: Model<Autor>,
+	@InjectModel('Editorial') private editorialModelo: Model<Editorial>) {}
 
 	async obtenerLibros(){
 		return await this.libroModelo.find();
@@ -142,5 +146,26 @@ export class LibrosService {
 
 	async obtenerRelacionesEditorial(id:string){
 		return await this.libro_editorialModelo.find({"libroId":id});
+	}
+
+	async obtenerRelacionesTotales(id:string){
+		const libro_autor = await this.libro_autorModelo.find({"libroId":id});
+		const libro_editorial = await this.libro_editorialModelo.find({"libroId":id});
+
+		var resultado = [];
+
+		if(libro_autor){
+			for (let elemento of libro_autor) {
+				const autor = await this.autorModelo.findOne({"autorId":elemento.autorId});
+				await resultado.push(autor);
+			}
+		}
+		if(libro_editorial){
+			for (let elemento of libro_editorial) {
+				const editorial = await this.editorialModelo.findOne({"editorialId":elemento.editorialId});
+				resultado.push(editorial);
+			}
+		}
+		return resultado;
 	}
 }
