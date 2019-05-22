@@ -6,7 +6,7 @@ export const ItemSchema = new Schema({
     codigoBarra: String,
     numeroCopia: Number,
     volumen: Number,
-    modoAdquisicion: String,
+    modoAdquisicion: Number,
     fuenteAdquisicion: String,
     precioAdquisicion: String,
     fechaAdquisicion: String,
