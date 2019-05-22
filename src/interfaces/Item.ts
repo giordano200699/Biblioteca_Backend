@@ -5,15 +5,15 @@ export interface Item extends Document {
     itemId?: number,
     numeroIngreso: String,
     codigoBarra: String,
-    numeroCopia: number,
+    numeroCopia?: number,
     volumen: number,
-    modoAdquisicion: String,
+    modoAdquisicion: number,
     fuenteAdquisicion: String,
     precioAdquisicion?: String,
     fechaAdquisicion?: String,
     disponibilidad: number,
     tipoImpresion: number,
     lugarPublicacion: String,
-    libroId: number,
+    libroId?: number,
     standId?: number
 }
