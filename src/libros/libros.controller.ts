@@ -105,4 +105,9 @@ export class LibrosController {
 	obtenerRelacionesEditorial(@Param('id') id){
 		return this.librosService.obtenerRelacionesEditorial(id);
 	}
+
+	@Get('todo/:id')
+	obtenerRelacionesTotales(@Param('id') id){
+		return this.librosService.obtenerRelacionesTotales(id);
+	}
 }
