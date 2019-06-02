@@ -16,6 +16,7 @@ import { EditorialesModule } from './editoriales/editoriales.module';
 import { LibrosModule } from './libros/libros.module';
 import { PedidosModule } from './componentes/pedidos/pedidos.module';
 import { PrestamosModule } from './componentes/prestamos/prestamos.module';
+import { TemasModule } from './componentes/temas/temas.module';
 
 @Module({
 	imports: [MongooseModule.forRoot('mongodb+srv://giordano:waldo@cluster0-p2txm.mongodb.net/BibliotecaBackend?retryWrites=true',{useNewUrlParser: true}),
@@ -26,7 +27,8 @@ import { PrestamosModule } from './componentes/prestamos/prestamos.module';
 		EditorialesModule,
 		LibrosModule,
 		PedidosModule,
-		PrestamosModule
+		PrestamosModule,
+		TemasModule
 	],
   controllers: [AppController, UsuariosController, ArchivosController],
   providers: [AppService, UsuariosService, ArchivosService],
