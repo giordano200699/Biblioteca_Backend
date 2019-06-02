@@ -1,4 +1,3 @@
-//Esquema para Temas
 import { Schema } from 'mongoose';
 
 export const TemaSchema = new Schema({
