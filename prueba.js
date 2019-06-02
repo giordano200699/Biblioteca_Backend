@@ -13,3 +13,4 @@ MongoClient.connect(uri, function(err, client) {
 });
 
 //mongodb://localhost/BibliotecaBackend
+//Comentarios hechos  por Gustavo Samaniego 
