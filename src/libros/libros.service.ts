@@ -148,24 +148,34 @@ export class LibrosService {
 		return await this.libro_editorialModelo.find({"libroId":id});
 	}
 
-	async obtenerRelacionesTotales(id:string){
+	async obtenerTotalInformacion(id:string){
 		const libro_autor = await this.libro_autorModelo.find({"libroId":id});
 		const libro_editorial = await this.libro_editorialModelo.find({"libroId":id});
+		const items = await this.itemModelo.find({'libroId':id});
 
 		var resultado = [];
+		var dato = {autores:[],editoriales:[],items:[]};
 
 		if(libro_autor){
 			for (let elemento of libro_autor) {
 				const autor = await this.autorModelo.findOne({"autorId":elemento.autorId});
-				await resultado.push(autor);
+				await dato.autores.push(autor);
 			}
 		}
+
 		if(libro_editorial){
 			for (let elemento of libro_editorial) {
 				const editorial = await this.editorialModelo.findOne({"editorialId":elemento.editorialId});
-				resultado.push(editorial);
+				await dato.editoriales.push(editorial);
 			}
 		}
-		return resultado;
+
+		if(items){
+			for (let elemento of items) {
+				await dato.items.push(elemento);
+			}
+		}
+
+		return dato;
 	}
 }
