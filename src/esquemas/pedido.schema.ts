@@ -7,5 +7,6 @@ export const PedidoSchema = new Schema({
     fechaInicio: Date,
     fechaFin: Date,
     estado: Number,
-    adminId: String
+    adminId: String,
+    tipo: Number
 });

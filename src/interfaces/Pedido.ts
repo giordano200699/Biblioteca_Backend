@@ -8,5 +8,6 @@ export interface Pedido extends Document {
     fechaInicio: Date,
     fechaFin: Date,
     estado: number,
-    adminId?: String
+    adminId?: String,
+    tipo: number
 }
