@@ -70,4 +70,11 @@ export class PedidosService {
         await this.usuarioModelo.update({'dni':pedido[0].usuarioId},{'estado':0});
         return await this.pedidoModelo.update({"pedidoId":id},datos);
     }
+
+    async aceptarPedido(id:String, datos){
+        const pedido = await this.pedidoModelo.find({'pedidoId':id});
+        await this.itemModelo.update({'itemId':pedido[0].itemId},{'disponibilidad':3});
+        await this.usuarioModelo.update({'dni':pedido[0].usuarioId},{'estado':2});
+        return await this.pedidoModelo.update({"pedidoId":id},datos);
+    }
 }
