@@ -27,6 +27,11 @@ export class PedidosController {
 	crearPedido(@Body() pedido:Pedido, @Req() request: Request){
 		return this.pedidosService.crearPedido(pedido);
     }
+
+    @Post('cancelar/:id')
+	cancelarPedido(@Body() datos, @Req() request: Request,@Param('id') id){
+		return this.pedidosService.cancelarPedido(id,datos);
+    }
     
     @Put(':id')
 	actualizarPedido(@Param('id') id, @Body() pedido:Pedido, @Req() request: Request){
