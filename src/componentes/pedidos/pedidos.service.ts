@@ -66,8 +66,8 @@ export class PedidosService {
 
     async cancelarPedido(id:String, datos){
         const pedido = await this.pedidoModelo.find({'pedidoId':id});
-        await this.itemModelo.update({'itemId':pedido.itemId},{'disponibilidad':1});
-        await this.usuarioModelo.update({'dni':pedido.usuarioId},{'estado':0});
+        await this.itemModelo.update({'itemId':pedido[0].itemId},{'disponibilidad':1});
+        await this.usuarioModelo.update({'dni':pedido[0].usuarioId},{'estado':0});
         return await this.pedidoModelo.update({"pedidoId":id},datos);
     }
 }
