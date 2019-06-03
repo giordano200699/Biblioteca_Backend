@@ -51,7 +51,7 @@ export class PedidosService {
                 pedidoId:pedido.pedidoId,
                 usuarioId: pedido.usuarioId,
                 itemId: pedido.itemId,
-                fechaInicio: pedido.itemId,
+                fechaInicio: pedido.fechaInicio,
                 estado: pedido.estado,
                 tipo: pedido.tipo,
                 dni: usuario.dni,
