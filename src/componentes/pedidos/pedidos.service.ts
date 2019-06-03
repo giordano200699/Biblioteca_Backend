@@ -40,4 +40,27 @@ export class PedidosService {
 	async eliminarPedido(id:String){
 		return await this.pedidoModelo.deleteOne({"pedidoId":id});
 	}
+
+    async obtenerPedidosActivos(){
+        var pedidos = await this.pedidoModelo.find({'estado':1});
+        var resultado = [];
+
+        for (let pedido of pedidos) {
+            const usuario = await this.usuarioModelo.findOne({'dni':pedido.usuarioId});
+            await resultado.push({
+                pedidoId:pedido.pedidoId,
+                usuarioId: pedido.usuarioId,
+                itemId: pedido.itemId,
+                fechaInicio: pedido.itemId,
+                estado: pedido.estado,
+                tipo: pedido.tipo,
+                dni: usuario.dni,
+                nombres:usuario.nombres,
+                apellidos:usuario.apellidos,
+                codigo: usuario.codigo
+            });
+        }
+
+        return resultado;
+    }
 }
