@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { Prestamo } from "src/interfaces/Prestamo";
 import { Pedido } from "src/interfaces/Pedido";
 import { Usuario } from "src/interfaces/Usuario";
+import { Item } from "src/interfaces/Item";
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 
@@ -10,7 +11,8 @@ export class PrestamosService {
 
 	constructor(@InjectModel('Prestamo') private prestamoModelo: Model<Prestamo>,
     @InjectModel('Pedido') private pedidoModelo: Model<Pedido>,
-    @InjectModel('Usuario') private usuarioModelo: Model<Usuario>) {}
+    @InjectModel('Usuario') private usuarioModelo: Model<Usuario>,
+    @InjectModel('Item') private itemModelo: Model<Item>) {}
 
     async obtenerPrestamos(){
 		return await this.prestamoModelo.find();
@@ -60,5 +62,13 @@ export class PrestamosService {
         }
 
         return resultado;
+    }
+
+    async recibirPrestamo(id:String, datos){
+        const prestamo = await this.prestamoModelo.find({'prestamoId':id});
+        const pedido = await this.pedidoModelo.findOne({'pedidoId':prestamo.pedidoId});
+        await this.itemModelo.update({'itemId':pedido.itemId},{'disponibilidad':1});
+        await this.usuarioModelo.update({'dni':pedido.usuarioId},{'estado':0});
+        return await this.prestamoModelo.update({"prestamoId":id},datos);
     }
 }

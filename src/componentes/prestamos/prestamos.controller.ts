@@ -27,6 +27,11 @@ export class PrestamosController {
 	crearPrestamo(@Body() prestamo:Prestamo, @Req() request: Request){
 		return this.prestamosService.crearPrestamo(prestamo);
     }
+
+    @Post('recibir/:id')
+	recibirPrestamo(@Body() datos, @Req() request: Request,@Param('id') id){
+		return this.prestamosService.recibirPrestamo(id,datos);
+    }
     
     @Put(':id')
 	actualizarPrestamo(@Param('id') id, @Body() prestamo:Prestamo, @Req() request: Request){
