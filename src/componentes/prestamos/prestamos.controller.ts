@@ -13,6 +13,11 @@ export class PrestamosController {
 		return this.prestamosService.obtenerPrestamos();
     }
 
+    @Get('activos')
+	obtenerPrestamosActivos(@Req() request: Request){
+		return this.prestamosService.obtenerPrestamosActivos();
+    }
+
     @Get(':id')
 	obtenerPrestamo(@Param('id') id){
 		return this.prestamosService.obtenerPrestamo(id);
