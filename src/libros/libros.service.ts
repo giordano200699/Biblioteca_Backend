@@ -178,4 +178,16 @@ export class LibrosService {
 
 		return dato;
 	}
+
+	async paginadoLibros(pagina,dato){
+		if(parseInt(pagina)>0){
+			if(pagina!=''){
+				return await this.libroModelo.find({"titulo":{'$regex': dato.busqueda}}).skip(4*(parseInt(pagina)-1)).limit(5);
+			}else{
+				return await this.libroModelo.find().skip(4*(parseInt(pagina)-1)).limit(5);
+			}
+			
+		}
+		return [];
+	}
 }

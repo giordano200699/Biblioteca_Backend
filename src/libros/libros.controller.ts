@@ -110,4 +110,9 @@ export class LibrosController {
 	obtenerTotalInformacion(@Param('id') id){
 		return this.librosService.obtenerTotalInformacion(id);
 	}
+
+	@Post('paginado/:pagina')
+	paginadoLibros(@Body() dato,@Param('pagina') pagina){
+		return this.librosService.paginadoLibros(pagina,dato);
+	}
 }
