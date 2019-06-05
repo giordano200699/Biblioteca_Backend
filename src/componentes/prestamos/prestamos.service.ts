@@ -65,7 +65,7 @@ export class PrestamosService {
     }
 
     async recibirPrestamo(id:String, datos){
-        const prestamo = await this.prestamoModelo.find({'prestamoId':id});
+        const prestamo = await this.prestamoModelo.findOne({'prestamoId':id});
         const pedido = await this.pedidoModelo.findOne({'pedidoId':prestamo.pedidoId});
         await this.itemModelo.update({'itemId':pedido.itemId},{'disponibilidad':1});
         await this.usuarioModelo.update({'dni':pedido.usuarioId},{'estado':0});
