@@ -6,7 +6,7 @@ export interface Prestamo extends Document {
     pedidoId: number,
     fechaInicio: Date,
     fechaFin: Date,
-    fechaDevolucion: Date,
+    fechaDevolucion?: Date,
     estado: number,
     adminId?: String
 }
