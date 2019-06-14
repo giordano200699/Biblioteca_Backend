@@ -1,12 +1,12 @@
 import { Schema } from 'mongoose';
 
 export const TemaSchema = new Schema({
-    temaId: Number,
+    temaId: String,
     nombre: String,
     descripcion: String,
-    temaR1: Number,
-    temaR2: Number,
-    temaR3: Number,
-    temaR4: Number,
-    temaR5: Number
+    temaR1: String,
+    temaR2: String,
+    temaR3: String,
+    temaR4: String,
+    temaR5: String
 });
