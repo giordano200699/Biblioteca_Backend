@@ -1,12 +1,14 @@
 import { Injectable } from '@nestjs/common';
 import { Tema } from "src/interfaces/Tema";
+import { Libro_Tema } from "src/interfaces/Libro_Tema";
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 
 @Injectable()
 export class TemasService {
 
-	constructor(@InjectModel('Tema') private temaModelo: Model<Tema>) {}
+    constructor(@InjectModel('Tema') private temaModelo: Model<Tema>,
+    @InjectModel('Libro_Tema') private libro_temaModelo: Model<Libro_Tema>) {}
 
     async obtenerTemas(){
 		return await this.temaModelo.find();
@@ -33,5 +35,18 @@ export class TemasService {
 
 	async eliminarTema(id:String){
 		return await this.temaModelo.deleteOne({"temaId":id});
-	}
+    }
+    
+    async relacionarLibro(datos:Libro_Tema){
+        const libroTema = new this.libro_temaModelo(datos);
+        return await libroTema.save();
+    }
+
+    async actualizarRelacionarLibro(datos:Libro_Tema){
+        return await this.libro_temaModelo.update({"libroId":datos.libroId},datos);
+    }
+
+    async obtenerRelacionesLibros(id:String){
+        return await this.libro_temaModelo.find({"libroId":parseInt(id+'')});
+    }
 }
