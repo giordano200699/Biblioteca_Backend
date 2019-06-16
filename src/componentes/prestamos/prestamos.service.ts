@@ -3,8 +3,10 @@ import { Prestamo } from "src/interfaces/Prestamo";
 import { Pedido } from "src/interfaces/Pedido";
 import { Usuario } from "src/interfaces/Usuario";
 import { Item } from "src/interfaces/Item";
+import { Libro } from "src/interfaces/Libro";
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
+var request = require('request');
 
 @Injectable()
 export class PrestamosService {
@@ -12,7 +14,8 @@ export class PrestamosService {
 	constructor(@InjectModel('Prestamo') private prestamoModelo: Model<Prestamo>,
     @InjectModel('Pedido') private pedidoModelo: Model<Pedido>,
     @InjectModel('Usuario') private usuarioModelo: Model<Usuario>,
-    @InjectModel('Item') private itemModelo: Model<Item>) {}
+    @InjectModel('Item') private itemModelo: Model<Item>,
+    @InjectModel('Libro') private libroModelo: Model<Libro>) {}
 
     async obtenerPrestamos(){
 		return await this.prestamoModelo.find();
@@ -69,6 +72,25 @@ export class PrestamosService {
         const pedido = await this.pedidoModelo.findOne({'pedidoId':prestamo.pedidoId});
         await this.itemModelo.update({'itemId':pedido.itemId},{'disponibilidad':1});
         await this.usuarioModelo.update({'dni':pedido.usuarioId},{'estado':0});
+        const itemRelacionado = await this.itemModelo.findOne({'itemId':pedido.itemId});
+        const libroRelacionado = await this.libroModelo.findOne({'libroId':itemRelacionado.libroId});
+
+        request.post( 'https://bibliotecafrontend.herokuapp.com/evento?Content-Type=application/json&clave=QDm6pbKeVwWikPvpMSUYwp0tNnxcaLoYLnyvLQ4ISV39uQOgsjTEjS0UNlZHwbxl2Ujf30S31CSKndwpkFeubt5gJHTgFlq7LeIaSYc0jNm44loPty2ZK1nI0qisrt2Xwq0nFhdp8H3kdpyL5wVZLH7EpSE6IO0cHAOGOfSpJjF36eiCuXJ3gkOfX8C4n',
+         { 
+            json:   {
+                        nombreEvento: 'prestamo finalizado',
+                        contenidoEvento:{
+                                            pedidoId: pedido.pedidoId,
+                                            numeroCopia: itemRelacionado.numeroCopia,
+                                            titulo: libroRelacionado.titulo,
+                                            usuarioId: pedido.usuarioId,
+                                            administradorId: datos.adminId,
+                                            libroId: libroRelacionado.libroId
+                                        }
+                    }
+         },
+        function (error, response, body) { if (!error && response.statusCode == 200) { console.log(body) } } );
+
         return await this.prestamoModelo.update({"prestamoId":id},datos);
     }
 }

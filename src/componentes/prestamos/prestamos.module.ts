@@ -6,12 +6,14 @@ import { PrestamoSchema } from './../../esquemas/prestamo.schema';
 import { PedidoSchema } from './../../esquemas/pedido.schema';
 import { UsuarioSchema } from './../../esquemas/usuario.schema';
 import { ItemSchema } from './../../esquemas/item.schema';
+import { LibroSchema } from './../../esquemas/libro.schema';
 
 @Module({
 	imports: [MongooseModule.forFeature([{ name: 'Prestamo', schema: PrestamoSchema },
 	{ name: 'Pedido', schema: PedidoSchema },
 	{ name: 'Usuario', schema: UsuarioSchema },
-	{ name: 'Item', schema: ItemSchema }])],
+	{ name: 'Item', schema: ItemSchema },
+	{ name: 'Libro', schema: LibroSchema }])],
 	controllers: [PrestamosController],
 	providers: [PrestamosService]
 })
