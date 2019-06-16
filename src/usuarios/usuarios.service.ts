@@ -87,4 +87,53 @@ export class UsuariosService {
 		}
 		return resultado;
 	}
+
+	async esUsuarioGoogle(cuenta){
+		var resultado = [];
+		const cuentas = await this.cuentaModelo.find({"nombre":cuenta.nombre});
+		if(cuentas.length==1){
+
+			if(cuentas[0].idGoogle){
+				if(cuentas[0].idGoogle!=cuenta.idGoogle){
+					return {tipoMensaje:2,descripcion:'Ya existe una cuenta de google relacionada con esta cuenta.'};
+				}
+
+			}else{
+					cuentas[0].idGoogle = cuenta.idGoogle;
+					await cuentas[0].save();
+			}
+			const usuario = await this.usuarioModelo.findOne({'dni':cuentas[0].idUsuario});
+			const pedidosRechazados = await this.pedidoModelo.find({'estado':0,'usuarioId':usuario.dni}).count();
+			const pedidosActivos = await this.pedidoModelo.find({'estado':1,'usuarioId':usuario.dni}).count();
+			const pedidosAceptados = await this.pedidoModelo.find({'estado':2,'usuarioId':usuario.dni}).count();
+
+			await resultado.push({"_id": usuario._id,
+	            "nombres": usuario.nombres,
+	            "apellidos": usuario.apellidos,
+	            "edad": usuario.edad,
+	            "dni": usuario.dni,
+	            "imagenId": usuario.imagenId,
+	            "sexo": usuario.sexo,
+	            "estado": usuario.estado,
+	            "codigo": usuario.codigo,
+	            "correoInstitucional": usuario.correoInstitucional,
+	            "correoPersonal": usuario.correoPersonal,
+	            "escuelaId": usuario.escuelaId,
+	            "telefonoCasa": usuario.telefonoCasa,
+	            "telefonoMovil": usuario.telefonoMovil,
+	            "direccion": usuario.direccion,
+	            "tipoUsuarioId": usuario.tipoUsuarioId,
+	            "pedidosRechazados":pedidosRechazados,
+				"pedidosActivos":pedidosActivos,
+				"pedidosAceptados":pedidosAceptados});
+
+		}else{
+			if(cuentas.length==0){
+				return {tipoMensaje:2,descripcion:'No existe una cuenta de usuario con estos datos.'};
+			}else{
+				return {tipoMensaje:3,descripcion:'ERROR RARO, existen mas de una cuenta de usuario vinculado con estos datos'};				
+			}
+		}
+		return resultado;
+	}
 }

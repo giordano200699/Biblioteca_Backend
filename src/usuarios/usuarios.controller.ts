@@ -16,6 +16,12 @@ export class UsuariosController {
 	esUsuario(@Body() cuenta){
 		return this.usuariosService.esUsuario(cuenta);
 	}
+
+	@Post('esUsuarioGoogle')
+	esUsuarioGoogle(@Body() cuenta){
+		return this.usuariosService.esUsuarioGoogle(cuenta);
+	}
+
 	@Get(':id')
 	obtenerUsuario(@Param('id') id, @Req() request: Request){
 		return this.usuariosService.obtenerUsuario(id);
