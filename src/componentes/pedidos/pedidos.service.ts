@@ -98,7 +98,7 @@ export class PedidosService {
             json:   {
                         nombreEvento: 'pedido rechazado',
                         contenidoEvento:{
-                                            pedidoId: pedidoNuevo.pedidoId,
+                                            pedidoId: pedido.pedidoId,
                                             numeroCopia: itemRelacionado.numeroCopia,
                                             titulo: libroRelacionado.titulo
                                         }
