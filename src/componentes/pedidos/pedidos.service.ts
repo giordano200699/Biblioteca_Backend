@@ -4,6 +4,7 @@ import { Item } from "src/interfaces/Item";
 import { Usuario } from "src/interfaces/Usuario";
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
+var request = require('request');
 
 @Injectable()
 export class PedidosService {
@@ -17,6 +18,18 @@ export class PedidosService {
     }
     
     async crearPedido(pedido: Pedido){
+
+        request.post( 'https://bibliotecafrontend.herokuapp.com/evento?Content-Type=application/json&clave=QDm6pbKeVwWikPvpMSUYwp0tNnxcaLoYLnyvLQ4ISV39uQOgsjTEjS0UNlZHwbxl2Ujf30S31CSKndwpkFeubt5gJHTgFlq7LeIaSYc0jNm44loPty2ZK1nI0qisrt2Xwq0nFhdp8H3kdpyL5wVZLH7EpSE6IO0cHAOGOfSpJjF36eiCuXJ3gkOfX8C4n',
+         { 
+            json:   {
+                        nombreEvento: 'some event',
+                        contenidoEvento:{
+                                            for: "Jajaja olakase"
+                                        }
+                    }
+         },
+          function (error, response, body) { if (!error && response.statusCode == 200) { console.log(body) } } );
+
         await this.itemModelo.update({'itemId':pedido.itemId},{'disponibilidad':2});
         await this.usuarioModelo.update({'dni':pedido.usuarioId},{'estado':1});
         const ultimoPedido:Pedido = await this.pedidoModelo.findOne().sort({ pedidoId: 'desc'}).limit(1);
