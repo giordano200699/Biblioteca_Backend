@@ -90,7 +90,7 @@ export class PedidosService {
         const pedido = await this.pedidoModelo.find({'pedidoId':id});
         await this.itemModelo.update({'itemId':pedido[0].itemId},{'disponibilidad':1});
         await this.usuarioModelo.update({'dni':pedido[0].usuarioId},{'estado':0});
-        const itemRelacionado = await this.itemModelo.findOne({'itemId':pedido.itemId});
+        const itemRelacionado = await this.itemModelo.findOne({'itemId':pedido[0].itemId});
         const libroRelacionado = await this.libroModelo.findOne({'libroId':itemRelacionado.libroId});
 
         request.post( 'https://bibliotecafrontend.herokuapp.com/evento?Content-Type=application/json&clave=QDm6pbKeVwWikPvpMSUYwp0tNnxcaLoYLnyvLQ4ISV39uQOgsjTEjS0UNlZHwbxl2Ujf30S31CSKndwpkFeubt5gJHTgFlq7LeIaSYc0jNm44loPty2ZK1nI0qisrt2Xwq0nFhdp8H3kdpyL5wVZLH7EpSE6IO0cHAOGOfSpJjF36eiCuXJ3gkOfX8C4n',
@@ -100,7 +100,9 @@ export class PedidosService {
                         contenidoEvento:{
                                             pedidoId: pedido.pedidoId,
                                             numeroCopia: itemRelacionado.numeroCopia,
-                                            titulo: libroRelacionado.titulo
+                                            titulo: libroRelacionado.titulo,
+                                            usuarioId: pedido[0].usuarioId,
+                                            administradorId: pedido[0].adminId
                                         }
                     }
          },
