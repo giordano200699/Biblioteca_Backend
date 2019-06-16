@@ -64,7 +64,7 @@ export class TemasService {
                 temas: nuevosTemas
             }
         }
-        return {};
+        return [];
         
     }
 }
