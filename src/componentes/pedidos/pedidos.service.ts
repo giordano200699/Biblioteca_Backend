@@ -14,21 +14,13 @@ export class PedidosService {
     @InjectModel('Usuario') private usuarioModelo: Model<Usuario>) {}
 
     async obtenerPedidos(){
+
 		return await this.pedidoModelo.find();
     }
     
     async crearPedido(pedido: Pedido){
 
-        request.post( 'https://bibliotecafrontend.herokuapp.com/evento?Content-Type=application/json&clave=QDm6pbKeVwWikPvpMSUYwp0tNnxcaLoYLnyvLQ4ISV39uQOgsjTEjS0UNlZHwbxl2Ujf30S31CSKndwpkFeubt5gJHTgFlq7LeIaSYc0jNm44loPty2ZK1nI0qisrt2Xwq0nFhdp8H3kdpyL5wVZLH7EpSE6IO0cHAOGOfSpJjF36eiCuXJ3gkOfX8C4n',
-         { 
-            json:   {
-                        nombreEvento: 'some event',
-                        contenidoEvento:{
-                                            for: "Jajaja olakase"
-                                        }
-                    }
-         },
-          function (error, response, body) { if (!error && response.statusCode == 200) { console.log(body) } } );
+        
 
         await this.itemModelo.update({'itemId':pedido.itemId},{'disponibilidad':2});
         await this.usuarioModelo.update({'dni':pedido.usuarioId},{'estado':1});
@@ -39,6 +31,18 @@ export class PedidosService {
             pedido.pedidoId = 1;
         }
         const pedidoNuevo = new this.pedidoModelo(pedido);
+
+
+        request.post( 'https://bibliotecafrontend.herokuapp.com/evento?Content-Type=application/json&clave=QDm6pbKeVwWikPvpMSUYwp0tNnxcaLoYLnyvLQ4ISV39uQOgsjTEjS0UNlZHwbxl2Ujf30S31CSKndwpkFeubt5gJHTgFlq7LeIaSYc0jNm44loPty2ZK1nI0qisrt2Xwq0nFhdp8H3kdpyL5wVZLH7EpSE6IO0cHAOGOfSpJjF36eiCuXJ3gkOfX8C4n',
+         { 
+            json:   {
+                        nombreEvento: 'pedido creado',
+                        contenidoEvento:{
+                                            pedidoId: pedidoNuevo.pedidoId
+                                        }
+                    }
+         },
+          function (error, response, body) { if (!error && response.statusCode == 200) { console.log(body) } } );
         return await pedidoNuevo.save();
     }
     
