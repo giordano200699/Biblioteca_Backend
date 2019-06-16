@@ -47,6 +47,24 @@ export class TemasService {
     }
 
     async obtenerRelacionesLibros(id:String){
-        return await this.libro_temaModelo.find({"libroId":parseInt(id+'')});
+        const datos = await this.libro_temaModelo.findOne({"libroId":parseInt(id+'')});
+        if(datos){
+            var nuevosTemas = [];
+            for (let tema of datos.temas) {
+                const nuevoTema = await this.temaModelo.findOne({'temaId':tema.temaId});
+                await nuevosTemas.push({
+                    temaId: tema.temaId,
+                    peso: tema.peso,
+                    nombre: nuevoTema.nombre
+                });
+            }
+            return {
+                _id: datos._id,
+                libroId: datos.libroId,
+                temas: nuevosTemas
+            }
+        }
+        return {};
+        
     }
 }
