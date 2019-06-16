@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { Pedido } from "src/interfaces/Pedido";
 import { Item } from "src/interfaces/Item";
 import { Usuario } from "src/interfaces/Usuario";
+import { Libro } from "src/interfaces/Libro";
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 var request = require('request');
@@ -11,7 +12,8 @@ export class PedidosService {
 
 	constructor(@InjectModel('Pedido') private pedidoModelo: Model<Pedido>,
     @InjectModel('Item') private itemModelo: Model<Item>,
-    @InjectModel('Usuario') private usuarioModelo: Model<Usuario>) {}
+    @InjectModel('Usuario') private usuarioModelo: Model<Usuario>,
+    @InjectModel('Libro') private libroModelo: Model<Libro>) {}
 
     async obtenerPedidos(){
 
@@ -25,6 +27,8 @@ export class PedidosService {
         await this.itemModelo.update({'itemId':pedido.itemId},{'disponibilidad':2});
         await this.usuarioModelo.update({'dni':pedido.usuarioId},{'estado':1});
         const ultimoPedido:Pedido = await this.pedidoModelo.findOne().sort({ pedidoId: 'desc'}).limit(1);
+        const itemRelacionado = await this.itemModelo.findOne({'itemId':pedido.itemId});
+        const libroRelacionado = await this.libroModelo.findOne({'libroId':itemRelacionado.libroId});
         if(ultimoPedido){
             pedido.pedidoId = ultimoPedido.pedidoId + 1;
         }else{
@@ -38,7 +42,9 @@ export class PedidosService {
             json:   {
                         nombreEvento: 'pedido creado',
                         contenidoEvento:{
-                                            pedidoId: pedidoNuevo.pedidoId
+                                            pedidoId: pedidoNuevo.pedidoId,
+                                            numeroCopia: itemRelacionado.numeroCopia,
+                                            titulo: libroRelacionado.titulo
                                         }
                     }
          },
