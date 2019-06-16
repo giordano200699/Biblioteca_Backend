@@ -43,7 +43,29 @@ export class TemasService {
     }
 
     async actualizarRelacionarLibro(datos:Libro_Tema){
-        return await this.libro_temaModelo.update({"libroId":datos.libroId},datos);
+        var arreglo = [];
+        for (let tema of datos.temas) {
+            var nuevoTema = await this.temaModelo.findOne({'nombre':tema.nombre});
+            if(!nuevoTema){
+                const ultimoTema:Tema = await this.temaModelo.findOne().sort({ temaId: 'desc'}).limit(1);
+                var idNuevo;
+                if(ultimoTema){
+                    idNuevo = ''+(parseInt(ultimoTema.temaId+'') + 1);
+                }else{
+                    idNuevo = '1';
+                }
+                nuevoTema = await new this.temaModelo({
+                    temaId: idNuevo,
+                    nombre: tema.nombre,
+                });
+                await nuevoTema.save();
+            }
+            await arreglo.push({
+                temaId: nuevoTema.temaId,
+                peso: tema.peso
+            });
+        }
+        return await this.libro_temaModelo.update({"libroId":datos.libroId},{temas:arreglo});
     }
 
     async obtenerRelacionesLibros(id:String){
