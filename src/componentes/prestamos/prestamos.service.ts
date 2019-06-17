@@ -4,6 +4,8 @@ import { Pedido } from "src/interfaces/Pedido";
 import { Usuario } from "src/interfaces/Usuario";
 import { Item } from "src/interfaces/Item";
 import { Libro } from "src/interfaces/Libro";
+import { Autor } from "src/interfaces/Autor";
+import { Libro_Autor } from "src/interfaces/Libro_Autor";
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 var request = require('request');
@@ -15,7 +17,9 @@ export class PrestamosService {
     @InjectModel('Pedido') private pedidoModelo: Model<Pedido>,
     @InjectModel('Usuario') private usuarioModelo: Model<Usuario>,
     @InjectModel('Item') private itemModelo: Model<Item>,
-    @InjectModel('Libro') private libroModelo: Model<Libro>) {}
+    @InjectModel('Libro') private libroModelo: Model<Libro>,
+    @InjectModel('Autor') private autorModelo: Model<Autor>,
+    @InjectModel('Libro_Autor') private libro_autorModelo: Model<Libro_Autor>) {}
 
     async obtenerPrestamos(){
 		return await this.prestamoModelo.find();
@@ -138,6 +142,47 @@ export class PrestamosService {
 
         }
 
+        return resultado;
+    }
+
+
+    async obtenerPrestamosUsuario(id:String){
+        const usuario = await this.usuarioModelo.findOne({'dni':id});
+        const pedidos = await this.pedidoModelo.find({usuarioId:id,estado:2});
+        var resultado = [];
+        var item = [];
+        var libro = [];
+        var libro_autor = [];
+        var autor = [];
+
+        for (let pedido of pedidos) {
+            if(!item[pedido.itemId]){
+                item[pedido.itemId] = await this.itemModelo.findOne({itemId:pedido.itemId});
+            }
+            if(!libro[item[pedido.itemId].libroId]){
+                libro[item[pedido.itemId].libroId] = await this.libroModelo.findOne({libroId:item[pedido.itemId].libroId});
+            }
+            if(!libro_autor[libro[item[pedido.itemId].libroId].libroId]){
+                libro_autor[libro[item[pedido.itemId].libroId].libroId] = await this.libro_autorModelo.findOne({libroId:libro[item[pedido.itemId].libroId].libroId,tipo:1});
+            }
+            if(!autor[libro_autor[libro[item[pedido.itemId].libroId].libroId].autorId]){
+                autor[libro_autor[libro[item[pedido.itemId].libroId].libroId].autorId] = await this.autorModelo.findOne({autorId:libro_autor[libro[item[pedido.itemId].libroId].libroId].autorId});
+            }
+            const prestamo = await this.prestamoModelo.findOne({pedidoId:pedido.pedidoId});
+            await resultado.push({
+                //pedido:pedido,
+                //item:item,
+                //libro:libro
+                titulo:libro[item[pedido.itemId].libroId].titulo,
+                nombreAutor: autor[libro_autor[libro[item[pedido.itemId].libroId].libroId].autorId].nombre,
+                codigoBarra: item[pedido.itemId].codigoBarra,
+                fechaInicio: prestamo.fechaInicio,
+                fechaFin: prestamo.fechaFin,
+                pedidoId: pedido.pedidoId,
+                tipo: pedido.tipo,
+                estado: prestamo.estado
+            });
+        }
         return resultado;
     }
 }
