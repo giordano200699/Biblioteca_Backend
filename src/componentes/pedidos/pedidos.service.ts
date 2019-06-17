@@ -172,7 +172,8 @@ export class PedidosService {
                 fechaInicio: pedido.fechaInicio,
                 fechaFin: pedido.fechaFin,
                 pedidoId: pedido.pedidoId,
-                tipo: pedido.tipo
+                tipo: pedido.tipo,
+                estado: pedido.estado
             });
         }
         return resultado;
