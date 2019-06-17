@@ -5,6 +5,8 @@ import { Libro_Autor } from "src/interfaces/Libro_Autor";
 import { Libro_Editorial } from "src/interfaces/Libro_Editorial";
 import { Autor } from "src/interfaces/Autor";
 import { Editorial } from "src/interfaces/Editorial";
+import { Prestamo } from "src/interfaces/Prestamo";
+import { Pedido } from "src/interfaces/Pedido";
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 
@@ -16,7 +18,9 @@ export class LibrosService {
 	@InjectModel('Libro_Autor') private libro_autorModelo: Model<Libro_Autor>,
 	@InjectModel('Libro_Editorial') private libro_editorialModelo: Model<Libro_Editorial>,
 	@InjectModel('Autor') private autorModelo: Model<Autor>,
-	@InjectModel('Editorial') private editorialModelo: Model<Editorial>) {}
+	@InjectModel('Editorial') private editorialModelo: Model<Editorial>,
+	@InjectModel('Prestamo') private prestamoModelo: Model<Prestamo>,) {}
+	@InjectModel('Pedido') private pedidoModelo: Model<Pedido>
 
 	async obtenerLibros(){
 		return await this.libroModelo.find();
@@ -190,4 +194,51 @@ export class LibrosService {
 		}
 		return [];
 	}
+
+	async obtenerEstadistica(datos){
+
+        const prestamos = await this.prestamoModelo.find({"estado":2});
+        var nuevosPrestamos = [];
+        var resultado = [];
+        //return prestamos;
+        for (let prestamo of prestamos) {
+            const pedido = await this.pedidoModelo.findOne({pedidoId:prestamo.pedidoId});
+            const item = await this.itemModelo.findOne({itemId:pedido.itemId});
+            if(!nuevosPrestamos['p'+item.libroId]){
+                nuevosPrestamos['p'+item.libroId] = {libroId:item.libroId, cantidad:1};
+            }
+            else{
+                await nuevosPrestamos['p'+item.libroId].cantidad++;
+            }
+        }
+        var arreglo = [];
+        for (var indice in nuevosPrestamos){
+            arreglo.push(nuevosPrestamos[indice]);
+        }
+
+        await arreglo.sort(function (a, b) {
+          if (a.cantidad > b.cantidad) {
+            return -1;
+          }
+          if (a.cantidad < b.cantidad) {
+            return 1;
+          }
+          return 0;
+        });
+
+        arreglo = await arreglo.slice(0,10);
+
+
+        for (let dato of arreglo) {
+            const libro = await this.libroModelo.findOne({libroId:dato.libroId});
+            await resultado.push({
+                titulo:libro.titulo,
+                libroId: libro.libroId,
+                cantidad: dato.cantidad
+            })
+
+        }
+
+        return resultado;
+    }
 }

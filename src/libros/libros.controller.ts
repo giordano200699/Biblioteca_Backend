@@ -26,6 +26,11 @@ export class LibrosController {
 		return this.librosService.crearLibro(libro);
 	}
 
+	@Post('estadistica')
+	obtenerEstadistica(@Body() datos){
+		return this.librosService.obtenerEstadistica(datos);
+    }
+
 	@Put(':id')
 	actualizarLibro(@Param('id') id, @Body() libro:Libro, @Req() request: Request){
 		return this.librosService.actualizarLibro(id,libro);
