@@ -193,7 +193,15 @@ export class PedidosService {
             }
         }
 
-        nuevosPedidos.sort();
+        nuevosPedidos.sort(function (a, b) {
+          if (a.cantidad > b.cantidad) {
+            return 1;
+          }
+          if (a.cantidad < b.cantidad) {
+            return -1;
+          }
+          return 0;
+        });
         var contador = 0;
         
         for (var indice in nuevosPedidos) {
