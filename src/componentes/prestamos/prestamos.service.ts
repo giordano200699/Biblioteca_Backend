@@ -93,4 +93,41 @@ export class PrestamosService {
 
         return await this.prestamoModelo.update({"prestamoId":id},datos);
     }
+
+    async obtenerEstadistica(datos){
+
+        const prestamos = await this.prestamoModelo.find({"estado":2});
+        var nuevosPrestamos = [];
+        var resultado = [];
+        //return prestamos;
+        for (let prestamo of prestamos) {
+            const pedido = await this.pedidoModelo.findOne({pedidoId:prestamo.pedidoId});
+            if(!nuevosPrestamos['p'+pedido.usuarioId]){
+                nuevosPrestamos['p'+pedido.usuarioId] = {usuarioId:pedido.usuarioId, cantidad:1};
+            }
+            else{
+                await nuevosPrestamos['p'+pedido.usuarioId].cantidad++;
+            }
+        }
+
+        nuevosPrestamos.sort();
+        var contador = 0;
+        
+        for (var indice in nuevosPrestamos) {
+            contador++;
+            if(contador==11){
+                break;
+            }
+            const usuario = await this.usuarioModelo.findOne({dni:nuevosPrestamos[indice].usuarioId});
+            await resultado.push({
+                apellidos:usuario.apellidos,
+                nombres: usuario.nombres,
+                usuarioId: nuevosPrestamos[indice].usuarioId,
+                cantidad: nuevosPrestamos[indice].cantidad
+            })
+
+        }
+
+        return resultado;
+    }
 }

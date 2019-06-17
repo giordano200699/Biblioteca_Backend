@@ -28,6 +28,11 @@ export class PrestamosController {
 		return this.prestamosService.crearPrestamo(prestamo);
     }
 
+    @Post('estadistica')
+	obtenerEstadistica(@Body() datos){
+		return this.prestamosService.obtenerEstadistica(datos);
+    }
+
     @Post('recibir/:id')
 	recibirPrestamo(@Body() datos, @Req() request: Request,@Param('id') id){
 		return this.prestamosService.recibirPrestamo(id,datos);
