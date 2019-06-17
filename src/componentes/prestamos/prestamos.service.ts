@@ -109,29 +109,31 @@ export class PrestamosService {
                 await nuevosPrestamos['p'+pedido.usuarioId].cantidad++;
             }
         }
+        var arreglo = [];
+        for (var indice in nuevosPrestamos){
+            arreglo.push(nuevosPrestamos[indice]);
+        }
 
-        nuevosPrestamos.sort(function (a, b) {
+        await arreglo.sort(function (a, b) {
           if (a.cantidad > b.cantidad) {
-            return 1;
+            return -1;
           }
           if (a.cantidad < b.cantidad) {
-            return -1;
+            return 1;
           }
           return 0;
         });
-        var contador = 0;
-        
-        for (var indice in nuevosPrestamos) {
-            contador++;
-            if(contador==11){
-                break;
-            }
-            const usuario = await this.usuarioModelo.findOne({dni:nuevosPrestamos[indice].usuarioId});
+
+        arreglo = await arreglo.slice(0,10);
+
+
+        for (let dato of arreglo) {
+            const usuario = await this.usuarioModelo.findOne({dni:dato.usuarioId});
             await resultado.push({
                 apellidos:usuario.apellidos,
                 nombres: usuario.nombres,
-                usuarioId: nuevosPrestamos[indice].usuarioId,
-                cantidad: nuevosPrestamos[indice].cantidad
+                usuarioId: dato.usuarioId,
+                cantidad: dato.cantidad
             })
 
         }

@@ -193,28 +193,30 @@ export class PedidosService {
             }
         }
 
-        nuevosPedidos.sort(function (a, b) {
+        var arreglo = [];
+        for (var indice in nuevosPedidos){
+            arreglo.push(nuevosPedidos[indice]);
+        }
+
+        await arreglo.sort(function (a, b) {
           if (a.cantidad > b.cantidad) {
-            return 1;
+            return -1;
           }
           if (a.cantidad < b.cantidad) {
-            return -1;
+            return 1;
           }
           return 0;
         });
-        var contador = 0;
-        
-        for (var indice in nuevosPedidos) {
-            contador++;
-            if(contador==11){
-                break;
-            }
-            const usuario = await this.usuarioModelo.findOne({dni:nuevosPedidos[indice].usuarioId});
+
+        arreglo = await arreglo.slice(0,10);
+
+        for (let dato of arreglo) {
+            const usuario = await this.usuarioModelo.findOne({dni:dato.usuarioId});
             await resultado.push({
                 apellidos:usuario.apellidos,
                 nombres: usuario.nombres,
-                usuarioId: nuevosPedidos[indice].usuarioId,
-                cantidad: nuevosPedidos[indice].cantidad
+                usuarioId: dato.usuarioId,
+                cantidad: dato.cantidad
             })
 
         }
