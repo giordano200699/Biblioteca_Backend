@@ -181,7 +181,7 @@ export class PedidosService {
 
     async obtenerEstadistica(datos){
 
-        const pedidos = await this.pedidoModelo.find({"estado":2});
+        const pedidos = await this.pedidoModelo.find();
         var nuevosPedidos = [];
         var resultado = [];
         for (let pedido of pedidos) {
