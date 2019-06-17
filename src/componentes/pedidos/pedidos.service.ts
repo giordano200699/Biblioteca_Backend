@@ -3,6 +3,8 @@ import { Pedido } from "src/interfaces/Pedido";
 import { Item } from "src/interfaces/Item";
 import { Usuario } from "src/interfaces/Usuario";
 import { Libro } from "src/interfaces/Libro";
+import { Autor } from "src/interfaces/Autor";
+import { Libro_Autor } from "src/interfaces/Libro_Autor";
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 var request = require('request');
@@ -13,7 +15,9 @@ export class PedidosService {
 	constructor(@InjectModel('Pedido') private pedidoModelo: Model<Pedido>,
     @InjectModel('Item') private itemModelo: Model<Item>,
     @InjectModel('Usuario') private usuarioModelo: Model<Usuario>,
-    @InjectModel('Libro') private libroModelo: Model<Libro>) {}
+    @InjectModel('Libro') private libroModelo: Model<Libro>,
+    @InjectModel('Autor') private autorModelo: Model<Autor>,
+    @InjectModel('Libro_Autor') private libro_autorModelo: Model<Libro_Autor>) {}
 
     async obtenerPedidos(){
 
@@ -134,5 +138,43 @@ export class PedidosService {
         function (error, response, body) { if (!error && response.statusCode == 200) { console.log(body) } } );
 
         return await this.pedidoModelo.update({"pedidoId":id},datos);
+    }
+
+    async obtenerPedidosUsuario(id:String){
+        const usuario = await this.usuarioModelo.findOne({'dni':id});
+        const pedidos = await this.pedidoModelo.find({usuarioId:id});
+        var resultado = [];
+        var item = [];
+        var libro = [];
+        var libro_autor = [];
+        var autor = [];
+
+        for (let pedido of pedidos) {
+            if(!item[pedido.itemId]){
+                item[pedido.itemId] = await this.itemModelo.findOne({itemId:pedido.itemId});
+            }
+            if(!libro[item[pedido.itemId].libroId]){
+                libro[item[pedido.itemId].libroId] = await this.libroModelo.findOne({libroId:item[pedido.itemId].libroId});
+            }
+            if(!libro_autor[libro[item[pedido.itemId].libroId].libroId]){
+                libro_autor[libro[item[pedido.itemId].libroId].libroId] = await this.libro_autorModelo.findOne({libroId:libro[item[pedido.itemId].libroId].libroId,tipo:1});
+            }
+            if(!autor[libro_autor[libro[item[pedido.itemId].libroId].libroId].autorId]){
+                autor[libro_autor[libro[item[pedido.itemId].libroId].libroId].autorId] = await this.autorModelo.findOne({autorId:libro_autor[libro[item[pedido.itemId].libroId].libroId].autorId});
+            }
+            await resultado.push({
+                //pedido:pedido,
+                //item:item,
+                //libro:libro
+                titulo:libro[item[pedido.itemId].libroId].titulo,
+                nombreAutor: autor[libro_autor[libro[item[pedido.itemId].libroId].libroId].autorId].nombre,
+                codigoBarra: item[pedido.itemId].codigoBarra,
+                fechaInicio: pedido.fechaInicio,
+                fechaFin: pedido.fechaFin,
+                pedidoId: pedido.pedidoId,
+                tipo: pedido.tipo
+            });
+        }
+        return resultado;
     }
 }

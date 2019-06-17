@@ -18,6 +18,11 @@ export class PedidosController {
 		return this.pedidosService.obtenerPedidosActivos();
     }
 
+    @Get('usuario/:id')
+	obtenerPedidosUsuario(@Param('id') id){
+		return this.pedidosService.obtenerPedidosUsuario(id);
+	}
+
     @Get(':id')
 	obtenerPedido(@Param('id') id){
 		return this.pedidosService.obtenerPedido(id);
@@ -47,6 +52,7 @@ export class PedidosController {
 	eliminarPedido(@Param('id') id, @Req() request: Request){
 		return this.pedidosService.eliminarPedido(id);
 	}
+
 
 	
 }
