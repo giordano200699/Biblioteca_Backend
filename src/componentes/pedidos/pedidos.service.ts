@@ -178,4 +178,39 @@ export class PedidosService {
         }
         return resultado;
     }
+
+    async obtenerEstadistica(datos){
+
+        const pedidos = await this.pedidoModelo.find({"estado":2});
+        var nuevosPedidos = [];
+        var resultado = [];
+        for (let pedido of pedidos) {
+            if(!nuevosPedidos['p'+pedido.usuarioId]){
+                nuevosPedidos['p'+pedido.usuarioId] = {usuarioId:pedido.usuarioId, cantidad:1};
+            }
+            else{
+                await nuevosPedidos['p'+pedido.usuarioId].cantidad++;
+            }
+        }
+
+        nuevosPedidos.sort();
+        var contador = 0;
+        
+        for (var indice in nuevosPedidos) {
+            contador++;
+            if(contador==11){
+                break;
+            }
+            const usuario = await this.usuarioModelo.findOne({dni:nuevosPedidos[indice].usuarioId});
+            await resultado.push({
+                apellidos:usuario.apellidos,
+                nombres: usuario.nombres,
+                usuarioId: nuevosPedidos[indice].usuarioId,
+                cantidad: nuevosPedidos[indice].cantidad
+            })
+
+        }
+
+        return resultado;
+    }
 }

@@ -33,6 +33,11 @@ export class PedidosController {
 		return this.pedidosService.crearPedido(pedido);
     }
 
+    @Post('estadistica')
+	obtenerEstadistica(@Body() datos){
+		return this.pedidosService.obtenerEstadistica(datos);
+    }
+
     @Post('cancelar/:id')
 	cancelarPedido(@Body() datos, @Req() request: Request,@Param('id') id){
 		return this.pedidosService.cancelarPedido(id,datos);
