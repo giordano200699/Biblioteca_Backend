@@ -181,7 +181,39 @@ export class PedidosService {
 
     async obtenerEstadistica(datos){
 
-        const pedidos = await this.pedidoModelo.find();
+        //const pedidos = await this.pedidoModelo.find();
+        var pedidos = [];
+
+        if(datos.mes ==0){
+            pedidos = await this.pedidoModelo.find({
+            "fechaInicio":{"$gte":new Date(datos.anio+"-01-01 00:00:00.000Z"),
+                            "$lte":new Date((datos.anio+1)+"-01-01 00:00:00.000Z")}});
+        }else{
+            if(datos.mes<10){
+                var cadenaMes = "0"+datos.mes;
+                var cadenaMesS = "0"+(datos.mes+1);
+            }else{
+                if(datos.mes<12){
+                    var cadenaMes = ""+datos.mes;
+                    var cadenaMesS = ""+(datos.mes+1);
+                }else{
+                    var cadenaMes = "12";
+                    var cadenaMesS = "01";
+                }
+                
+            }
+            if(datos.mes!=12){
+                pedidos = await this.pedidoModelo.find({
+            "fechaInicio":{"$gte":new Date(datos.anio+"-"+cadenaMes+"-01 00:00:00.000Z"),
+                            "$lte":new Date(datos.anio+"-"+cadenaMesS+"-01 00:00:00.000Z")}});
+            }else{
+                pedidos = await this.pedidoModelo.find({
+            "fechaInicio":{"$gte":new Date(datos.anio+"-"+cadenaMes+"-01 00:00:00.000Z"),
+                            "$lte":new Date((datos.anio+1)+"-"+cadenaMesS+"-01 00:00:00.000Z")}});
+            }
+            
+        }
+
         var nuevosPedidos = [];
         var resultado = [];
         for (let pedido of pedidos) {

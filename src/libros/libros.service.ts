@@ -197,7 +197,40 @@ export class LibrosService {
 
 	async obtenerEstadistica(datos){
 
-        const prestamos = await this.prestamoModelo.find({"estado":2});
+        //const prestamos = await this.prestamoModelo.find({"estado":2});
+        
+        var prestamos = [];
+
+        if(datos.mes ==0){
+            prestamos = await this.prestamoModelo.find({"estado":2,
+            "fechaInicio":{"$gte":new Date(datos.anio+"-01-01 00:00:00.000Z"),
+                            "$lte":new Date((datos.anio+1)+"-01-01 00:00:00.000Z")}});
+        }else{
+            if(datos.mes<10){
+                var cadenaMes = "0"+datos.mes;
+                var cadenaMesS = "0"+(datos.mes+1);
+            }else{
+                if(datos.mes<12){
+                    var cadenaMes = ""+datos.mes;
+                    var cadenaMesS = ""+(datos.mes+1);
+                }else{
+                    var cadenaMes = "12";
+                    var cadenaMesS = "01";
+                }
+                
+            }
+            if(datos.mes!=12){
+                prestamos = await this.prestamoModelo.find({"estado":2,
+            "fechaInicio":{"$gte":new Date(datos.anio+"-"+cadenaMes+"-01 00:00:00.000Z"),
+                            "$lte":new Date(datos.anio+"-"+cadenaMesS+"-01 00:00:00.000Z")}});
+            }else{
+                prestamos = await this.prestamoModelo.find({"estado":2,
+            "fechaInicio":{"$gte":new Date(datos.anio+"-"+cadenaMes+"-01 00:00:00.000Z"),
+                            "$lte":new Date((datos.anio+1)+"-"+cadenaMesS+"-01 00:00:00.000Z")}});
+            }
+            
+        }
+
         var nuevosPrestamos = [];
         var resultado = [];
         //return prestamos;
