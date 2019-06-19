@@ -18,6 +18,7 @@ import { PedidosModule } from './componentes/pedidos/pedidos.module';
 import { PrestamosModule } from './componentes/prestamos/prestamos.module';
 import { TemasModule } from './componentes/temas/temas.module';
 
+
 @Module({
 	imports: [MongooseModule.forRoot('mongodb+srv://giordano:waldo@cluster0-p2txm.mongodb.net/BibliotecaBackend?retryWrites=true',{useNewUrlParser: true}),
 		UsuariosModule, 
@@ -34,6 +35,7 @@ import { TemasModule } from './componentes/temas/temas.module';
   providers: [AppService, UsuariosService, ArchivosService],
 })
 export class AppModule {
+
 	configure(consumer: MiddlewareConsumer): void {
 	    consumer.apply(LogeadorMiddleware)
 	      .forRoutes({ path: '*', method: RequestMethod.ALL });

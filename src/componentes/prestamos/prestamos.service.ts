@@ -217,4 +217,20 @@ export class PrestamosService {
         }
         return resultado;
     }
+
+    async analizarFinPrestamo(){
+        
+        var fechaActualS = new Date();
+        fechaActualS.setTime( fechaActualS.getTime() + -5 * 60 * 60 * 1000 );
+        //console.log(fechaActualS.toJSON());
+        const prestamos = await this.prestamoModelo.find({"estado":1,
+            "fechaFin":{"$lt":fechaActualS}
+        });
+        //console.log(prestamos);
+        for (let prestamo of prestamos){
+            const pedido = await this.pedidoModelo.findOne({"pedidoId":prestamo.pedidoId});
+            await this.usuarioModelo.update({'dni':pedido.usuarioId},{'estado':3});
+            await this.prestamoModelo.update({'prestamoId':prestamo.prestamoId},{'estado':0});
+        }
+    }
 }

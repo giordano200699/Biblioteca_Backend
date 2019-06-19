@@ -2,11 +2,17 @@ import { Controller, Get, Post, Put, Delete, Body,Param,Req } from '@nestjs/comm
 import { PrestamosService } from "./prestamos.service";
 import { Prestamo } from "./../../interfaces/Prestamo";
 import { Request } from 'express';
+const cron = require("node-cron");
 
 @Controller('prestamos')
 export class PrestamosController {
 
-	constructor(private prestamosService: PrestamosService){}
+	constructor(private prestamosService: PrestamosService){
+		var mithis = this;
+		cron.schedule("* * * * *", function() {
+	      mithis.prestamosService.analizarFinPrestamo();
+	    });
+	}
 	
 	@Get()
 	obtenerPrestamos(@Req() request: Request){
