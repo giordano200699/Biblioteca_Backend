@@ -2,12 +2,12 @@ import { Document } from "mongoose";
 
 export interface Castigo extends Document {
     _id?: String,
-    castigoId?: Number,
+    castigoId?: number,
     usuarioId: String,
-    prestamoId: Number,
+    prestamoId: number,
     fechaInicio: Date,
     fechaFin?: Date,
-    orden: Number,
-    estado: Number,
+    orden: number,
+    estado: number,
     ciclo: String
 }
