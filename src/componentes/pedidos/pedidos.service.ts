@@ -26,33 +26,35 @@ export class PedidosService {
     
     async crearPedido(pedido: Pedido){
 
-        
+        const usuario = await this.usuarioModelo.findOne({'dni':pedido.usuarioId});
+        if(usuario.estado == 0){
+            await this.itemModelo.update({'itemId':pedido.itemId},{'disponibilidad':2});
+            await this.usuarioModelo.update({'dni':pedido.usuarioId},{'estado':1});
+            const ultimoPedido:Pedido = await this.pedidoModelo.findOne().sort({ pedidoId: 'desc'}).limit(1);
+            const itemRelacionado = await this.itemModelo.findOne({'itemId':pedido.itemId});
+            const libroRelacionado = await this.libroModelo.findOne({'libroId':itemRelacionado.libroId});
+            if(ultimoPedido){
+                pedido.pedidoId = ultimoPedido.pedidoId + 1;
+            }else{
+                pedido.pedidoId = 1;
+            }
+            const pedidoNuevo = new this.pedidoModelo(pedido);
 
-        await this.itemModelo.update({'itemId':pedido.itemId},{'disponibilidad':2});
-        await this.usuarioModelo.update({'dni':pedido.usuarioId},{'estado':1});
-        const ultimoPedido:Pedido = await this.pedidoModelo.findOne().sort({ pedidoId: 'desc'}).limit(1);
-        const itemRelacionado = await this.itemModelo.findOne({'itemId':pedido.itemId});
-        const libroRelacionado = await this.libroModelo.findOne({'libroId':itemRelacionado.libroId});
-        if(ultimoPedido){
-            pedido.pedidoId = ultimoPedido.pedidoId + 1;
-        }else{
-            pedido.pedidoId = 1;
+            request.post( 'https://bibliotecafrontend.herokuapp.com/evento?Content-Type=application/json&clave=QDm6pbKeVwWikPvpMSUYwp0tNnxcaLoYLnyvLQ4ISV39uQOgsjTEjS0UNlZHwbxl2Ujf30S31CSKndwpkFeubt5gJHTgFlq7LeIaSYc0jNm44loPty2ZK1nI0qisrt2Xwq0nFhdp8H3kdpyL5wVZLH7EpSE6IO0cHAOGOfSpJjF36eiCuXJ3gkOfX8C4n',
+             { 
+                json:   {
+                            nombreEvento: 'pedido creado',
+                            contenidoEvento:{
+                                                pedidoId: pedidoNuevo.pedidoId,
+                                                numeroCopia: itemRelacionado.numeroCopia,
+                                                titulo: libroRelacionado.titulo
+                                            }
+                        }
+             },
+            function (error, response, body) { if (!error && response.statusCode == 200) { console.log(body) } } );
+            return await pedidoNuevo.save();
         }
-        const pedidoNuevo = new this.pedidoModelo(pedido);
-
-        request.post( 'https://bibliotecafrontend.herokuapp.com/evento?Content-Type=application/json&clave=QDm6pbKeVwWikPvpMSUYwp0tNnxcaLoYLnyvLQ4ISV39uQOgsjTEjS0UNlZHwbxl2Ujf30S31CSKndwpkFeubt5gJHTgFlq7LeIaSYc0jNm44loPty2ZK1nI0qisrt2Xwq0nFhdp8H3kdpyL5wVZLH7EpSE6IO0cHAOGOfSpJjF36eiCuXJ3gkOfX8C4n',
-         { 
-            json:   {
-                        nombreEvento: 'pedido creado',
-                        contenidoEvento:{
-                                            pedidoId: pedidoNuevo.pedidoId,
-                                            numeroCopia: itemRelacionado.numeroCopia,
-                                            titulo: libroRelacionado.titulo
-                                        }
-                    }
-         },
-        function (error, response, body) { if (!error && response.statusCode == 200) { console.log(body) } } );
-        return await pedidoNuevo.save();
+        return {tipoError:1,contenidoError:"El usuario no puede pedir materiales."};     
     }
     
     async obtenerPedido(id:String){
