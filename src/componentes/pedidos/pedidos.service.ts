@@ -54,7 +54,18 @@ export class PedidosService {
             function (error, response, body) { if (!error && response.statusCode == 200) { console.log(body) } } );
             return await pedidoNuevo.save();
         }
-        return {tipoError:1,contenidoError:"El usuario no puede pedir materiales."};     
+        else{
+            if(usuario.estado == 1){
+                return {tipoError:1,contenidoError:"Usted ya ha pedido un material."};   
+            }else if(usuario.estado == 2){
+                return {tipoError:2,contenidoError:"Usted ya presenta un préstamo activo."}; 
+            }else if(usuario.estado == 3){
+                return {tipoError:3,contenidoError:"Usted está bloqueado(a), por favor devuelva el material prestado."}; 
+            }else if(usuario.estado == 4){
+                return {tipoError:4,contenidoError:"Usted está castigado(a), espere a que termine la sanción."};
+            }
+        }
+        return {tipoError:5,contenidoError:"ERROR DESCONOCIDO, comuniquese con el Área de Biblioteca"};     
     }
     
     async obtenerPedido(id:String){
