@@ -37,6 +37,9 @@ export class CastigosService {
         const pedido = await this.pedidoModelo.findOne({"pedidoId":prestamo.pedidoId});
 
         await this.itemModelo.update({'itemId':pedido.itemId},{'disponibilidad':1});
+        prestamo.estado = 3;
+        prestamo.fechaDevolucion = fechaFin;
+        await prestamo.save();
         await this.usuarioModelo.update({'dni':pedido.usuarioId},{'estado':4});
 
         const castigos = await this.castigoModelo.find({"usuarioId":pedido.usuarioId,"ciclo":ciclo}).sort({ orden: 'desc'}).limit(1);
