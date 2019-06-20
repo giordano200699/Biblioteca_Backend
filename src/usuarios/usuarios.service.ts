@@ -54,30 +54,34 @@ export class UsuariosService {
 		const cuentas = await this.cuentaModelo.find({"nombre":cuenta.nombre,"contrasenia":cuenta.contrasenia});
 		if(cuentas.length==1){
 			const usuario = await this.usuarioModelo.findOne({'dni':cuentas[0].idUsuario});
-			const pedidosRechazados = await this.pedidoModelo.find({'estado':0,'usuarioId':usuario.dni}).count();
-			const pedidosActivos = await this.pedidoModelo.find({'estado':1,'usuarioId':usuario.dni}).count();
-			const pedidosAceptados = await this.pedidoModelo.find({'estado':2,'usuarioId':usuario.dni}).count();
-			await resultado.push({
-				"_id": usuario._id,
-	            "nombres": usuario.nombres,
-	            "apellidos": usuario.apellidos,
-	            "edad": usuario.edad,
-	            "dni": usuario.dni,
-	            "imagenId": usuario.imagenId,
-	            "sexo": usuario.sexo,
-	            "estado": usuario.estado,
-	            "codigo": usuario.codigo,
-	            "correoInstitucional": usuario.correoInstitucional,
-	            "correoPersonal": usuario.correoPersonal,
-	            "escuelaId": usuario.escuelaId,
-	            "telefonoCasa": usuario.telefonoCasa,
-	            "telefonoMovil": usuario.telefonoMovil,
-	            "direccion": usuario.direccion,
-	            "tipoUsuarioId": usuario.tipoUsuarioId,
-				"pedidosRechazados":pedidosRechazados,
-				"pedidosActivos":pedidosActivos,
-				"pedidosAceptados":pedidosAceptados
-			});
+			if(usuario.estado != 3){
+				const pedidosRechazados = await this.pedidoModelo.find({'estado':0,'usuarioId':usuario.dni}).count();
+				const pedidosActivos = await this.pedidoModelo.find({'estado':1,'usuarioId':usuario.dni}).count();
+				const pedidosAceptados = await this.pedidoModelo.find({'estado':2,'usuarioId':usuario.dni}).count();
+				await resultado.push({
+					"_id": usuario._id,
+		            "nombres": usuario.nombres,
+		            "apellidos": usuario.apellidos,
+		            "edad": usuario.edad,
+		            "dni": usuario.dni,
+		            "imagenId": usuario.imagenId,
+		            "sexo": usuario.sexo,
+		            "estado": usuario.estado,
+		            "codigo": usuario.codigo,
+		            "correoInstitucional": usuario.correoInstitucional,
+		            "correoPersonal": usuario.correoPersonal,
+		            "escuelaId": usuario.escuelaId,
+		            "telefonoCasa": usuario.telefonoCasa,
+		            "telefonoMovil": usuario.telefonoMovil,
+		            "direccion": usuario.direccion,
+		            "tipoUsuarioId": usuario.tipoUsuarioId,
+					"pedidosRechazados":pedidosRechazados,
+					"pedidosActivos":pedidosActivos,
+					"pedidosAceptados":pedidosAceptados
+				});
+			}else{
+				return {tipoMensaje:1,descripcion:'Su cuenta ha sido bloqueada, porfavor acercarse a devolver el material prestado.'};
+			}
 		}else{
 			if(cuentas.length==0){
 				return {tipoMensaje:2,descripcion:'No existe una cuenta de usuario con estos datos.'};
