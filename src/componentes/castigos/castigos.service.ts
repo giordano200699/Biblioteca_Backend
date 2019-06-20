@@ -63,7 +63,11 @@ export class CastigosService {
         }else if(nuevoOrden == 3){
             fechaFin.setDate(fechaFin.getDate() + 15);
         }else{
-            fechaFin = null;
+            if(mes<7){
+                fechaFin = new Date(fechaActualS.getFullYear()+"-07-01 00:00:00.000Z");
+            }else{
+                fechaFin = new Date((fechaActualS.getFullYear()+1)+"-01-01 00:00:00.000Z"); 
+            }
         }
 
         const castigoNuevo = new this.castigoModelo({
@@ -73,9 +77,24 @@ export class CastigosService {
             fechaFin: fechaFin,
             ciclo: ciclo,
             prestamoId: prestamo.prestamoId,
-            estado: 1
+            estado: 1,
+            usuarioId: pedido.usuarioId
         });
         return await castigoNuevo.save();
+    }
+
+    async analizarFinCastigo(){
+        var fechaActualS = new Date();
+        fechaActualS.setTime( fechaActualS.getTime() + -5 * 60 * 60 * 1000 );
+        const castigosActivos = await this.castigoModelo.find({"estado":1,
+            "fechaFin":{"$lt":fechaActualS}
+        });
+        for (let castigo of castigosActivos){
+            await this.usuarioModelo.update({'dni':castigo.usuarioId},{'estado':0});
+            castigo.estado = 0;
+            castigo.save();
+        }
+
     }
 
 }

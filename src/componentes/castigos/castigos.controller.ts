@@ -10,7 +10,7 @@ export class CastigosController {
 	constructor(private castigosService: CastigosService){
 		var mithis = this;
 		cron.schedule("* * * * *", function() {
-	      //mithis.prestamosService.analizarFinPrestamo();
+	      mithis.castigosService.analizarFinCastigo();
 	    });
 	}
 
