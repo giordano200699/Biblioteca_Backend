@@ -17,6 +17,7 @@ import { LibrosModule } from './libros/libros.module';
 import { PedidosModule } from './componentes/pedidos/pedidos.module';
 import { PrestamosModule } from './componentes/prestamos/prestamos.module';
 import { TemasModule } from './componentes/temas/temas.module';
+import { CastigosModule } from './componentes/castigos/castigos.module';
 
 
 @Module({
@@ -29,7 +30,8 @@ import { TemasModule } from './componentes/temas/temas.module';
 		LibrosModule,
 		PedidosModule,
 		PrestamosModule,
-		TemasModule
+		TemasModule,
+		CastigosModule
 	],
   controllers: [AppController, UsuariosController, ArchivosController],
   providers: [AppService, UsuariosService, ArchivosService],
