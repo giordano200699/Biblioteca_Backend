@@ -155,7 +155,7 @@ export class LibrosService {
 	async obtenerTotalInformacion(id:string){
 		const libro_autor = await this.libro_autorModelo.find({"libroId":id});
 		const libro_editorial = await this.libro_editorialModelo.find({"libroId":id});
-		const items = await this.itemModelo.find({'libroId':id});
+		const items = await this.itemModelo.find({'libroId':id}).sort({ numeroCopia: 'asc'});
 
 		var resultado = [];
 		var dato = {autores:[],editoriales:[],items:[]};
