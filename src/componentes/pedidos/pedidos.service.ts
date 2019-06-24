@@ -27,11 +27,14 @@ export class PedidosService {
     async crearPedido(pedido: Pedido){
 
         const usuario = await this.usuarioModelo.findOne({'dni':pedido.usuarioId});
-        if(usuario.estado == 0){
-            await this.itemModelo.update({'itemId':pedido.itemId},{'disponibilidad':2});
+        const itemRelacionado = await this.itemModelo.findOne({'itemId':pedido.itemId});
+        if(usuario.estado == 0 && itemRelacionado.disponibilidad==1){
+            //await this.itemModelo.update({'itemId':pedido.itemId},{'disponibilidad':2});
+            itemRelacionado.disponibilidad = 2;
+            itemRelacionado.save();
             await this.usuarioModelo.update({'dni':pedido.usuarioId},{'estado':1});
             const ultimoPedido:Pedido = await this.pedidoModelo.findOne().sort({ pedidoId: 'desc'}).limit(1);
-            const itemRelacionado = await this.itemModelo.findOne({'itemId':pedido.itemId});
+            
             const libroRelacionado = await this.libroModelo.findOne({'libroId':itemRelacionado.libroId});
             if(ultimoPedido){
                 pedido.pedidoId = ultimoPedido.pedidoId + 1;
@@ -55,6 +58,14 @@ export class PedidosService {
             return await pedidoNuevo.save();
         }
         else{
+            if(itemRelacionado.disponibilidad==0){
+                return {tipoError:6,contenidoError:"El material no esta disponible para préstamo."};  
+            }else if(itemRelacionado.disponibilidad==2){
+                return {tipoError:7,contenidoError:"El material ya ha sido pedido por otro usuario."};  
+            }else if(itemRelacionado.disponibilidad==3){
+                return {tipoError:8,contenidoError:"El material ya ha sido prestado a otro usuario."};  
+            }
+
             if(usuario.estado == 1){
                 return {tipoError:1,contenidoError:"Usted ya ha pedido un material."};   
             }else if(usuario.estado == 2){
