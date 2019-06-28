@@ -54,7 +54,7 @@ export class PrestamosService {
 
         for (let prestamo of prestamos) {
             const pedido = await this.pedidoModelo.findOne({'pedidoId':prestamo.pedidoId});
-            const usuario = await this.usuarioModelo.findOne({'dni':pedido.usuarioId});
+            const usuario = await this.usuarioModelo.findOne({'usuarioId':pedido.usuarioId});
             await resultado.push({
                 prestamoId:prestamo.prestamoId,
                 pedidoId:prestamo.pedidoId,
@@ -62,6 +62,7 @@ export class PrestamosService {
                 fechaFin: prestamo.fechaFin,
                 estado: prestamo.estado,
                 dni: usuario.dni,
+                usuarioId: usuario.usuarioId,
                 nombres:usuario.nombres,
                 apellidos:usuario.apellidos,
                 codigo: usuario.codigo
@@ -75,7 +76,7 @@ export class PrestamosService {
         const prestamo = await this.prestamoModelo.findOne({'prestamoId':id});
         const pedido = await this.pedidoModelo.findOne({'pedidoId':prestamo.pedidoId});
         await this.itemModelo.update({'itemId':pedido.itemId},{'disponibilidad':1});
-        await this.usuarioModelo.update({'dni':pedido.usuarioId},{'estado':0});
+        await this.usuarioModelo.update({'usuarioId':pedido.usuarioId},{'estado':0});
         const itemRelacionado = await this.itemModelo.findOne({'itemId':pedido.itemId});
         const libroRelacionado = await this.libroModelo.findOne({'libroId':itemRelacionado.libroId});
 
@@ -164,7 +165,7 @@ export class PrestamosService {
 
 
         for (let dato of arreglo) {
-            const usuario = await this.usuarioModelo.findOne({dni:dato.usuarioId});
+            const usuario = await this.usuarioModelo.findOne({usuarioId:dato.usuarioId});
             await resultado.push({
                 apellidos:usuario.apellidos,
                 nombres: usuario.nombres,
@@ -179,7 +180,7 @@ export class PrestamosService {
 
 
     async obtenerPrestamosUsuario(id:String){
-        const usuario = await this.usuarioModelo.findOne({'dni':id});
+        const usuario = await this.usuarioModelo.findOne({'usuarioId':id});
         const pedidos = await this.pedidoModelo.find({usuarioId:id,estado:2});
         var resultado = [];
         var item = [];
@@ -229,7 +230,7 @@ export class PrestamosService {
         //console.log(prestamos);
         for (let prestamo of prestamos){
             const pedido = await this.pedidoModelo.findOne({"pedidoId":prestamo.pedidoId});
-            await this.usuarioModelo.update({'dni':pedido.usuarioId},{'estado':3});
+            await this.usuarioModelo.update({'usuarioId':pedido.usuarioId},{'estado':3});
             await this.prestamoModelo.update({'prestamoId':prestamo.prestamoId},{'estado':0});
         }
     }

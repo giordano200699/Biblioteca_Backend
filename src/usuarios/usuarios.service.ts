@@ -16,24 +16,24 @@ export class UsuariosService {
 	}
 
 	async obtenerUsuario(id:String){
-		return await this.usuarioModelo.find({'dni':id});
+		return await this.usuarioModelo.find({'usuarioId':id});
 	}
 
 	async crearUsuario(usuario: Usuario){
 		const usuarioNuevo = new this.usuarioModelo(usuario);
-		const cuentaNueva = new this.cuentaModelo({nombre:usuario.correoInstitucional,contrasenia:usuario.codigo,idUsuario:usuario.dni});
+		const cuentaNueva = new this.cuentaModelo({nombre:usuario.correoInstitucional,contrasenia:usuario.codigo,idUsuario:usuario.usuarioId});
 		await cuentaNueva.save();
 		return await usuarioNuevo.save();
 
 	}
 
 	async actualizarUsuario(id:String, usuario:Usuario){
-		return await this.usuarioModelo.update({"dni":id},usuario);
+		return await this.usuarioModelo.update({"usuarioId":id},usuario);
 	}
 
 	async eliminarUsuario(id:String){
 		await this.cuentaModelo.deleteOne({"idUsuario":id});
-		return await this.usuarioModelo.deleteOne({"dni":id});
+		return await this.usuarioModelo.deleteOne({"usuarioId":id});
 	}
 
 	mensajeError(id:Number){
@@ -53,13 +53,14 @@ export class UsuariosService {
 		var resultado = [];
 		const cuentas = await this.cuentaModelo.find({"nombre":cuenta.nombre,"contrasenia":cuenta.contrasenia});
 		if(cuentas.length==1){
-			const usuario = await this.usuarioModelo.findOne({'dni':cuentas[0].idUsuario});
+			const usuario = await this.usuarioModelo.findOne({'usuarioId':cuentas[0].idUsuario});
 			if(usuario.estado != 3){
-				const pedidosRechazados = await this.pedidoModelo.find({'estado':0,'usuarioId':usuario.dni}).count();
-				const pedidosActivos = await this.pedidoModelo.find({'estado':1,'usuarioId':usuario.dni}).count();
-				const pedidosAceptados = await this.pedidoModelo.find({'estado':2,'usuarioId':usuario.dni}).count();
+				const pedidosRechazados = await this.pedidoModelo.find({'estado':0,'usuarioId':usuario.usuarioId}).count();
+				const pedidosActivos = await this.pedidoModelo.find({'estado':1,'usuarioId':usuario.usuarioId}).count();
+				const pedidosAceptados = await this.pedidoModelo.find({'estado':2,'usuarioId':usuario.usuarioId}).count();
 				await resultado.push({
 					"_id": usuario._id,
+					"usuarioId":usuario.usuarioId,
 		            "nombres": usuario.nombres,
 		            "apellidos": usuario.apellidos,
 		            "edad": usuario.edad,
@@ -106,12 +107,13 @@ export class UsuariosService {
 					cuentas[0].idGoogle = cuenta.idGoogle;
 					await cuentas[0].save();
 			}
-			const usuario = await this.usuarioModelo.findOne({'dni':cuentas[0].idUsuario});
-			const pedidosRechazados = await this.pedidoModelo.find({'estado':0,'usuarioId':usuario.dni}).count();
-			const pedidosActivos = await this.pedidoModelo.find({'estado':1,'usuarioId':usuario.dni}).count();
-			const pedidosAceptados = await this.pedidoModelo.find({'estado':2,'usuarioId':usuario.dni}).count();
+			const usuario = await this.usuarioModelo.findOne({'usuarioId':cuentas[0].idUsuario});
+			const pedidosRechazados = await this.pedidoModelo.find({'estado':0,'usuarioId':usuario.usuarioId}).count();
+			const pedidosActivos = await this.pedidoModelo.find({'estado':1,'usuarioId':usuario.usuarioId}).count();
+			const pedidosAceptados = await this.pedidoModelo.find({'estado':2,'usuarioId':usuario.usuarioId}).count();
 
 			await resultado.push({"_id": usuario._id,
+				"usuarioId": usuario.usuarioId,
 	            "nombres": usuario.nombres,
 	            "apellidos": usuario.apellidos,
 	            "edad": usuario.edad,

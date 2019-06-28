@@ -1,6 +1,7 @@
 import { Schema } from 'mongoose';
 
 export const UsuarioSchema = new Schema({
+  usuarioId: String,
   dni: String, 
   nombres: String,
   apellidos: String,

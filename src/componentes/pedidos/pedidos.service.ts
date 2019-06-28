@@ -26,13 +26,13 @@ export class PedidosService {
     
     async crearPedido(pedido: Pedido){
 
-        const usuario = await this.usuarioModelo.findOne({'dni':pedido.usuarioId});
+        const usuario = await this.usuarioModelo.findOne({'usuarioId':pedido.usuarioId});
         const itemRelacionado = await this.itemModelo.findOne({'itemId':pedido.itemId});
         if(usuario.estado == 0 && itemRelacionado.disponibilidad==1){
             //await this.itemModelo.update({'itemId':pedido.itemId},{'disponibilidad':2});
             itemRelacionado.disponibilidad = 2;
             itemRelacionado.save();
-            await this.usuarioModelo.update({'dni':pedido.usuarioId},{'estado':1});
+            await this.usuarioModelo.update({'usuarioId':pedido.usuarioId},{'estado':1});
             const ultimoPedido:Pedido = await this.pedidoModelo.findOne().sort({ pedidoId: 'desc'}).limit(1);
             
             const libroRelacionado = await this.libroModelo.findOne({'libroId':itemRelacionado.libroId});
@@ -96,7 +96,7 @@ export class PedidosService {
         var resultado = [];
 
         for (let pedido of pedidos) {
-            const usuario = await this.usuarioModelo.findOne({'dni':pedido.usuarioId});
+            const usuario = await this.usuarioModelo.findOne({'usuarioId':pedido.usuarioId});
             await resultado.push({
                 pedidoId:pedido.pedidoId,
                 usuarioId: pedido.usuarioId,
@@ -117,7 +117,7 @@ export class PedidosService {
     async cancelarPedido(id:String, datos){
         const pedido = await this.pedidoModelo.find({'pedidoId':id});
         await this.itemModelo.update({'itemId':pedido[0].itemId},{'disponibilidad':1});
-        await this.usuarioModelo.update({'dni':pedido[0].usuarioId},{'estado':0});
+        await this.usuarioModelo.update({'usuarioId':pedido[0].usuarioId},{'estado':0});
         const itemRelacionado = await this.itemModelo.findOne({'itemId':pedido[0].itemId});
         const libroRelacionado = await this.libroModelo.findOne({'libroId':itemRelacionado.libroId});
 
@@ -142,7 +142,7 @@ export class PedidosService {
     async aceptarPedido(id:String, datos){
         const pedido = await this.pedidoModelo.find({'pedidoId':id});
         await this.itemModelo.update({'itemId':pedido[0].itemId},{'disponibilidad':3});
-        await this.usuarioModelo.update({'dni':pedido[0].usuarioId},{'estado':2});
+        await this.usuarioModelo.update({'usuarioId':pedido[0].usuarioId},{'estado':2});
         const itemRelacionado = await this.itemModelo.findOne({'itemId':pedido[0].itemId});
         const libroRelacionado = await this.libroModelo.findOne({'libroId':itemRelacionado.libroId});
 
@@ -165,7 +165,7 @@ export class PedidosService {
     }
 
     async obtenerPedidosUsuario(id:String){
-        const usuario = await this.usuarioModelo.findOne({'dni':id});
+        const usuario = await this.usuarioModelo.findOne({'usuarioId':id});
         const pedidos = await this.pedidoModelo.find({usuarioId:id});
         var resultado = [];
         var item = [];
@@ -267,7 +267,7 @@ export class PedidosService {
         arreglo = await arreglo.slice(0,10);
 
         for (let dato of arreglo) {
-            const usuario = await this.usuarioModelo.findOne({dni:dato.usuarioId});
+            const usuario = await this.usuarioModelo.findOne({usuarioId:dato.usuarioId});
             await resultado.push({
                 apellidos:usuario.apellidos,
                 nombres: usuario.nombres,
