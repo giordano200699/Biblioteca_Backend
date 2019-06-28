@@ -16,7 +16,11 @@ export class UsuariosService {
 	}
 
 	async obtenerUsuario(id:String){
-		return await this.usuarioModelo.find({'usuarioId':id});
+		var usuario = await this.usuarioModelo.findOne({'usuarioId':id});
+		if(!usuario){
+			usuario = await this.usuarioModelo.findOne({'dni':id});
+		}
+		return usuario
 	}
 
 	async crearUsuario(usuario: Usuario){
@@ -28,12 +32,23 @@ export class UsuariosService {
 	}
 
 	async actualizarUsuario(id:String, usuario:Usuario){
-		return await this.usuarioModelo.update({"usuarioId":id},usuario);
+		var usuarioN = await this.usuarioModelo.findOne({'usuarioId':id});
+		if(!usuarioN){
+			usuarioN = await this.usuarioModelo.findOne({'dni':id});
+		}
+		var cuenta = await this.cuentaModelo.findOne({'idUsuario':usuarioN.usuarioId});
+		cuenta.nombre = usuario.correoInstitucional;
+		cuenta.save();
+		return await this.usuarioModelo.update({"usuarioId":usuarioN.usuarioId},usuario);
 	}
 
 	async eliminarUsuario(id:String){
-		await this.cuentaModelo.deleteOne({"idUsuario":id});
-		return await this.usuarioModelo.deleteOne({"usuarioId":id});
+		var usuario = await this.usuarioModelo.findOne({'usuarioId':id});
+		if(!usuario){
+			usuario = await this.usuarioModelo.findOne({'dni':id});
+		}
+		await this.cuentaModelo.deleteOne({"idUsuario":usuario.usuarioId});
+		return await this.usuarioModelo.deleteOne({"usuarioId":usuario.usuarioId});
 	}
 
 	mensajeError(id:Number){

@@ -26,13 +26,17 @@ export class PedidosService {
     
     async crearPedido(pedido: Pedido){
 
-        const usuario = await this.usuarioModelo.findOne({'usuarioId':pedido.usuarioId});
+        var usuario = await this.usuarioModelo.findOne({'usuarioId':pedido.usuarioId});
+        if(!usuario){
+            usuario = await this.usuarioModelo.findOne({'dni':pedido.usuarioId});
+        }
         const itemRelacionado = await this.itemModelo.findOne({'itemId':pedido.itemId});
         if(usuario.estado == 0 && itemRelacionado.disponibilidad==1){
             //await this.itemModelo.update({'itemId':pedido.itemId},{'disponibilidad':2});
             itemRelacionado.disponibilidad = 2;
             itemRelacionado.save();
-            await this.usuarioModelo.update({'usuarioId':pedido.usuarioId},{'estado':1});
+            usuario.estado = 1;
+            await usuario.save();
             const ultimoPedido:Pedido = await this.pedidoModelo.findOne().sort({ pedidoId: 'desc'}).limit(1);
             
             const libroRelacionado = await this.libroModelo.findOne({'libroId':itemRelacionado.libroId});
@@ -96,7 +100,10 @@ export class PedidosService {
         var resultado = [];
 
         for (let pedido of pedidos) {
-            const usuario = await this.usuarioModelo.findOne({'usuarioId':pedido.usuarioId});
+            var usuario = await this.usuarioModelo.findOne({'usuarioId':pedido.usuarioId});
+            if(!usuario){
+                usuario = await this.usuarioModelo.findOne({'dni':pedido.usuarioId});
+            }
             await resultado.push({
                 pedidoId:pedido.pedidoId,
                 usuarioId: pedido.usuarioId,
@@ -117,7 +124,12 @@ export class PedidosService {
     async cancelarPedido(id:String, datos){
         const pedido = await this.pedidoModelo.find({'pedidoId':id});
         await this.itemModelo.update({'itemId':pedido[0].itemId},{'disponibilidad':1});
-        await this.usuarioModelo.update({'usuarioId':pedido[0].usuarioId},{'estado':0});
+        var usuario = await this.usuarioModelo.findOne({'usuarioId':pedido[0].usuarioId});
+        if(!usuario){
+            usuario = await this.usuarioModelo.findOne({'dni':pedido[0].usuarioId});
+        }
+        usuario.estado = 0;
+        await usuario.save();
         const itemRelacionado = await this.itemModelo.findOne({'itemId':pedido[0].itemId});
         const libroRelacionado = await this.libroModelo.findOne({'libroId':itemRelacionado.libroId});
 
@@ -142,7 +154,12 @@ export class PedidosService {
     async aceptarPedido(id:String, datos){
         const pedido = await this.pedidoModelo.find({'pedidoId':id});
         await this.itemModelo.update({'itemId':pedido[0].itemId},{'disponibilidad':3});
-        await this.usuarioModelo.update({'usuarioId':pedido[0].usuarioId},{'estado':2});
+        var usuario = await this.usuarioModelo.findOne({'usuarioId':pedido[0].usuarioId});
+        if(!usuario){
+            usuario = await this.usuarioModelo.findOne({'dni':pedido[0].usuarioId});
+        }
+        usuario.estado = 2;
+        await usuario.save();
         const itemRelacionado = await this.itemModelo.findOne({'itemId':pedido[0].itemId});
         const libroRelacionado = await this.libroModelo.findOne({'libroId':itemRelacionado.libroId});
 
@@ -165,8 +182,11 @@ export class PedidosService {
     }
 
     async obtenerPedidosUsuario(id:String){
-        const usuario = await this.usuarioModelo.findOne({'usuarioId':id});
-        const pedidos = await this.pedidoModelo.find({usuarioId:id});
+        var usuario = await this.usuarioModelo.findOne({'usuarioId':id});
+        if(!usuario){
+            usuario = await this.usuarioModelo.findOne({'dni':id});
+        }
+        const pedidos = await this.pedidoModelo.find({usuarioId:usuario.usuarioId});
         var resultado = [];
         var item = [];
         var libro = [];
@@ -267,7 +287,10 @@ export class PedidosService {
         arreglo = await arreglo.slice(0,10);
 
         for (let dato of arreglo) {
-            const usuario = await this.usuarioModelo.findOne({usuarioId:dato.usuarioId});
+            var usuario = await this.usuarioModelo.findOne({usuarioId:dato.usuarioId});
+            if(!usuario){
+                usuario = await this.usuarioModelo.findOne({dni:dato.usuarioId});
+            }
             await resultado.push({
                 apellidos:usuario.apellidos,
                 nombres: usuario.nombres,

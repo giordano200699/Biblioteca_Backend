@@ -40,7 +40,12 @@ export class CastigosService {
         prestamo.estado = 3;
         prestamo.fechaDevolucion = fechaFin;
         await prestamo.save();
-        await this.usuarioModelo.update({'usuarioId':pedido.usuarioId},{'estado':4});
+        var usuario = await this.usuarioModelo.findOne({'usuarioId':pedido.usuarioId});
+        if(!usuario){
+            usuario = await this.usuarioModelo.findOne({'dni':pedido.usuarioId});
+        }
+        usuario.estado = 4;
+        await usuario.save();
 
         const castigos = await this.castigoModelo.find({"usuarioId":pedido.usuarioId,"ciclo":ciclo}).sort({ orden: 'desc'}).limit(1);
         const ultimoCastigo = await this.castigoModelo.findOne().sort({ castigoId: 'desc'}).limit(1);
@@ -78,7 +83,7 @@ export class CastigosService {
             ciclo: ciclo,
             prestamoId: prestamo.prestamoId,
             estado: 1,
-            usuarioId: pedido.usuarioId
+            usuarioId: usuario.usuarioId
         });
         return await castigoNuevo.save();
     }
