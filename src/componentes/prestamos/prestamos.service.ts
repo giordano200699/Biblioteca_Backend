@@ -227,7 +227,8 @@ export class PrestamosService {
                 fechaFin: prestamo.fechaFin,
                 pedidoId: pedido.pedidoId,
                 tipo: pedido.tipo,
-                estado: prestamo.estado
+                estado: prestamo.estado,
+                fechaDevolucion:prestamo.fechaDevolucion
             });
         }
         return resultado;
