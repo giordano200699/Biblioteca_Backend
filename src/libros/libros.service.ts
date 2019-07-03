@@ -25,6 +25,54 @@ export class LibrosService {
 	async obtenerLibros(){
 		return await this.libroModelo.find();
 	}
+
+	async obtenerLibrosConFormato(){
+		const libros = await this.libroModelo.find().limit(10);
+
+		var resultado = [];
+
+		for (let libro of libros){
+			
+
+			const autorM = await this.libro_autorModelo.aggregate([{
+				$lookup:
+			    {
+			        from: "autors",
+			        localField: "autorId",
+			        foreignField : "autorId",
+			        as: "autores"
+			    }
+			},{
+			    $match:{
+			    	"libroId":libro.libroId
+		    }}]);
+
+		    const editorialM = await this.libro_editorialModelo.aggregate([{
+				$lookup:
+			    {
+			        from: "editorials",
+			        localField: "editorialId",
+			        foreignField : "editorialId",
+			        as: "editoriales"
+			    }
+			},{
+			    $match:{
+			    	"libroId":libro.libroId
+		    }}]);
+
+		    var dato = {autores:autorM,
+		    	editoriales:editorialM,
+		    	libro:{
+					libroId: libro.libroId,
+					clasificacion: libro.clasificacion,
+					titulo: libro.titulo
+			}};
+				
+			
+			await resultado.push(dato);
+		}
+		return resultado;
+	}
 		
 	async crearLibro(libro: Libro){
 		const ultimoLibro:Libro = await this.libroModelo.findOne().sort({ libroId: 'desc'}).limit(1);
@@ -193,6 +241,67 @@ export class LibrosService {
 			
 		}
 		return [];
+	}
+
+	async paginadoLibrosF(pagina,dato){
+		if(parseInt(pagina)>0){
+			var libros = [];
+			var cantLibros = 0;
+			if(pagina!=''){
+				//var regex = new RegExp(["/", dato.busqueda, "/"].join(""), "i");
+				libros = await this.libroModelo.find({"titulo":{'$regex': new RegExp(dato.busqueda, "i")}}).skip(10*(parseInt(pagina)-1)).limit(10);
+				cantLibros = await this.libroModelo.find({"titulo":{'$regex': new RegExp(dato.busqueda, "i")}}).count();
+			}else{
+				libros = await this.libroModelo.find().skip(4*(parseInt(pagina)-1)).limit(10);
+				cantLibros = await this.libroModelo.count();
+			}
+
+			var resultado = [];
+
+			for (let libro of libros){
+				
+
+				const autorM = await this.libro_autorModelo.aggregate([{
+					$lookup:
+				    {
+				        from: "autors",
+				        localField: "autorId",
+				        foreignField : "autorId",
+				        as: "autores"
+				    }
+				},{
+				    $match:{
+				    	"libroId":libro.libroId
+			    }}]);
+
+			    const editorialM = await this.libro_editorialModelo.aggregate([{
+					$lookup:
+				    {
+				        from: "editorials",
+				        localField: "editorialId",
+				        foreignField : "editorialId",
+				        as: "editoriales"
+				    }
+				},{
+				    $match:{
+				    	"libroId":libro.libroId
+			    }}]);
+
+			    const dato = {autores:autorM,
+			    	editoriales:editorialM,
+			    	libro:{
+						libroId: libro.libroId,
+						clasificacion: libro.clasificacion,
+						titulo: libro.titulo
+				}};
+					
+				
+				await resultado.push(dato);
+			}
+			return {resultado:resultado,cantLibros:cantLibros};
+			
+		}
+		return {};
 	}
 
 	async obtenerEstadistica(datos){

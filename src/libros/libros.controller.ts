@@ -16,6 +16,11 @@ export class LibrosController {
 		return this.librosService.obtenerLibros();
 	}
 
+	@Get('conFormato')
+	obtenerLibrosConFormato(@Req() request: Request){
+		return this.librosService.obtenerLibrosConFormato();
+	}
+
 	@Get(':id')
 	obtenerLibro(@Param('id') id){
 		return this.librosService.obtenerLibro(id);
@@ -119,5 +124,10 @@ export class LibrosController {
 	@Post('paginado/:pagina')
 	paginadoLibros(@Body() dato,@Param('pagina') pagina){
 		return this.librosService.paginadoLibros(pagina,dato);
+	}
+
+	@Post('paginadoF/:pagina')
+	paginadoLibrosF(@Body() dato,@Param('pagina') pagina){
+		return this.librosService.paginadoLibrosF(pagina,dato);
 	}
 }
