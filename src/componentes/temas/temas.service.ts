@@ -65,6 +65,11 @@ export class TemasService {
                 peso: tema.peso
             });
         }
+        var libroTemas = await this.libro_temaModelo.findOne({"libroId":datos.libroId});
+        if(!libroTemas){
+            libroTemas = new this.libro_temaModelo({libroId:datos.libroId,temas:arreglo});
+            return await libroTemas.save();
+        }
         return await this.libro_temaModelo.update({"libroId":datos.libroId},{temas:arreglo});
     }
 
